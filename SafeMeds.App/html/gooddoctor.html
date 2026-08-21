@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SafeMeds – Good Doctor</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/gooddoctor.css">
+<link rel="stylesheet" href="../css/global.css" />
+
+</head>
+<body>
+
+<!-- NAV -->
+    <!-- NAVBAR -->
+    <header class="navbar-container">
+    <a href="landing.html" class="navbar-logo">
+      <img src="../images/FinalLogoUpdate.png" alt="SafeMeds Logo" class="nav-logo-img">
+        SafeMeds
+      </a>
+      
+      <nav class="navbar-links">
+        <a href="landing.html">Home</a>
+        <a href="gooddoctor.html">Good Doctor</a>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="about.html">About</a>
+        <a class="btn-primary login-btn landing-cta" href="signup.html">Login</a>
+        <a class="btn-primary register-btn landing-cta" href="register.html">Register</a>
+      </nav>
+    </header>
+
+
+    <section class="hero">
+      <div class="hero-pill"></div>
+      <div class="hero-pill"></div>
+      <div class="hero-pill"></div>
+      <div class="hero-pill"></div>
+
+      <div class="hero-content">
+        <span class="hero-eyebrow">Welcome to your personal 24/7 doctor</span>
+        <h1 class="hero-title">
+          GoodDoctor AI
+         
+        </h1>
+        <p class="hero-sub">
+          SafeMeds GoodDoctor AI is your personal AI-powered medical assistant, available 24/7 to help you understand your symptoms, provide guidance, and assist in making informed health decisions. Please note that while GoodDoctor AI can offer valuable insights, it is not a substitute for professional medical advice. Always consult a licensed healthcare provider for any medical concerns or emergencies.
+        </p>
+
+    </section>
+    
+
+
+<!-- MED MODAL -->
+<div class="med-modal" id="medModal" onclick="closeMedModal(event)">
+  <div class="med-modal-inner" id="medModalInner">
+    <button class="med-modal-close" onclick="document.getElementById('medModal').classList.remove('show')">✕ Close</button>
+    <div id="medModalContent"></div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast" style="position:fixed;bottom:24px;right:24px;background:#1e293b;color:#fff;padding:10px 18px;border-radius:10px;font-size:13px;opacity:0;transition:opacity .3s;z-index:9999;pointer-events:none;"></div>
+
+<!-- MAIN -->
+<div class="main-layout">
+
+  <!-- LEFT SIDEBAR -->
+  <div class="sidebar">
+    <div class="card">
+      <div class="card-header">Conversation History</div>
+      <div id="historyList">
+        <div class="history-item active" onclick="loadSession(0,this)">
+          <div class="h-avatar">🩺</div>
+          <div class="h-info">
+            <div class="h-name">Good Doctor</div>
+            <div class="h-sub" id="h-sub-0">Chat with Dr. Ava…</div>
+          </div>
+          <div class="h-time" id="h-time-0">Now</div>
+        </div>
+        <div class="history-item" onclick="loadSession(1,this)">
+          <div class="h-avatar">🩺</div>
+          <div class="h-info"><div class="h-name">Good Doctor</div><div class="h-sub">General check-in</div></div>
+          <div class="h-time">18 min</div>
+        </div>
+        <div class="history-item" onclick="loadSession(2,this)">
+          <div class="h-avatar">🩺</div>
+          <div class="h-info"><div class="h-name">Good Doctor</div><div class="h-sub">Headache symptoms</div></div>
+          <div class="h-time">1 hr</div>
+        </div>
+        <div class="history-item" onclick="loadSession(3,this)">
+          <div class="h-avatar">🩺</div>
+          <div class="h-info"><div class="h-name">Good Doctor</div><div class="h-sub">Allergy follow-up</div></div>
+          <div class="h-time">Yesterday</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card actions-card" id="actionsCard">
+      <div class="actions-title">Recommended Actions</div>
+      <div id="actionsList">
+        <div class="action-item">
+          <div class="action-icon blue">▶</div>
+          <div class="action-text">Describe your symptoms to receive personalized guidance from Dr. Ava.</div>
+        </div>
+        <div class="action-item">
+          <div class="action-icon teal">💧</div>
+          <div class="action-text">Stay hydrated — drink at least 8 glasses of water daily.</div>
+        </div>
+        <div class="action-item">
+          <div class="action-icon green">✓</div>
+          <div class="action-text">Keep a symptom journal for more accurate diagnosis assistance.</div>
+        </div>
+        <div class="action-item">
+          <div class="action-icon gray">⚙</div>
+          <div class="action-text">Set up medication reminders in the dosage widget below.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CENTER PANEL -->
+  <div class="center-panel">
+
+    <!-- CHAT -->
+    <div class="card chat-card">
+      <div class="chat-header">
+        <div class="chat-title-wrap">
+          <div class="chat-title">Chat with Dr. Ava</div>
+          <div class="chat-sub">AI-powered health assistant — not a substitute for professional medical advice</div>
+        </div>
+        <div class="typing-indicator" id="typingIndicator">
+          <div class="typing-dots"><span></span><span></span><span></span></div>
+          Dr. Ava is typing…
+        </div>
+      </div>
+      <div class="chat-messages" id="chatMessages">
+        <div class="msg dr">
+          <div class="msg-avatar">👩‍⚕️</div>
+          <div>
+            <div class="msg-bubble">Hello! I'm Dr. Ava 👋 I'm here to help you understand your symptoms and guide you toward the right care. How are you feeling today?</div>
+            <div class="msg-time">Just now</div>
+          </div>
+        </div>
+      </div>
+      <div class="suggestion-chips" id="suggestionChips">
+        <div class="chip" onclick="useChip(this)">I have a headache</div>
+        <div class="chip" onclick="useChip(this)">Feeling feverish</div>
+        <div class="chip" onclick="useChip(this)">Chest pain</div>
+        <div class="chip" onclick="useChip(this)">Stomach ache</div>
+        <div class="chip" onclick="useChip(this)">Cough &amp; cold</div>
+        <div class="chip" onclick="useChip(this)">Sore throat</div>
+      </div>
+      <div class="chat-input-row">
+        <input class="chat-input" id="chatInput" type="text" placeholder="Describe your symptoms…" onkeydown="if(event.key==='Enter')sendMessage()" />
+        <button class="send-btn" id="sendBtn" onclick="sendMessage()">➤</button>
+      </div>
+    </div>
+
+    <!-- BOTTOM GRID -->
+    <div class="bottom-grid">
+
+      <!-- MEDICINE GUIDANCE -->
+      <div class="card">
+        <div class="card-header">Medicine Guidance Cards</div>
+        <div class="med-search-row">
+          <input class="med-search-input" id="medSearchInput" type="text" placeholder="Search a medicine…" onkeydown="if(event.key==='Enter')searchMedicine()" />
+          <button class="med-search-btn" onclick="searchMedicine()">Search</button>
+        </div>
+        <div class="med-list" id="medList">
+          <div class="med-item" onclick="openMedDetail('ibuprofen')">
+            <div class="med-img">💊</div>
+            <div><div class="med-name">Ibuprofen</div><div class="med-desc">Dosage, interactions & side effects</div></div>
+            <div class="med-badge">NSAID</div>
+          </div>
+          <div class="med-item" onclick="openMedDetail('cetirizine')">
+            <div class="med-img" style="background:linear-gradient(135deg,#fce7f3,#fbcfe8)">💉</div>
+            <div><div class="med-name">Cetirizine</div><div class="med-desc">Dosage, interactions & side effects</div></div>
+            <div class="med-badge">Antihistamine</div>
+          </div>
+          <div class="med-item" onclick="openMedDetail('metformin')">
+            <div class="med-img" style="background:linear-gradient(135deg,#f0fdf4,#bbf7d0)">🧪</div>
+            <div><div class="med-name">Metformin</div><div class="med-desc">Dosage, interactions & side effects</div></div>
+            <div class="med-badge">Diabetes</div>
+          </div>
+          <div class="med-item" onclick="openMedDetail('amoxicillin')">
+            <div class="med-img" style="background:linear-gradient(135deg,#fffbeb,#fef3c7)">🦠</div>
+            <div><div class="med-name">Amoxicillin</div><div class="med-desc">Dosage, interactions & side effects</div></div>
+            <div class="med-badge">Antibiotic</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DOSAGE REMINDER -->
+      <div class="card dosage-card">
+        <div class="dosage-title">Daily Dosage Reminder</div>
+        <div class="dosage-add-row">
+          <input class="dosage-input" id="reminderMed" placeholder="Medicine name" />
+          <input class="dosage-input" id="reminderTime" type="time" style="width:95px" value="08:00" />
+          <button class="dosage-add-btn" onclick="addReminder()">+ Add</button>
+        </div>
+        <div class="reminders-list" id="remindersList"></div>
+        <div class="cal-grid" id="calGrid"></div>
+        <div class="alert-box red" id="dosageAlert" style="display:none">
+          <div class="alert-label">⚠ Reminder Due!</div>
+          <span id="dosageAlertText"></span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- RIGHT PANEL -->
+  <div class="right-panel">
+
+    <!-- CONDITIONS -->
+    <div class="card conditions-card">
+      <div class="cond-title">Suggested Conditions</div>
+      <div class="cond-sub" id="condSubText">Chat with Dr. Ava to get a real-time analysis</div>
+      <div class="cond-row" id="condRow">
+        <div class="cond-item">
+          <div class="cond-name" style="font-size:11.5px;color:var(--gray-400);font-weight:400">No analysis yet</div>
+          <div class="conf-lbl">Confidence</div>
+          <div class="conf-bar"><div class="conf-fill" style="width:0%"></div></div>
+        </div>
+        <div class="cond-item">
+          <div class="cond-name" style="font-size:11.5px;color:var(--gray-400);font-weight:400">No analysis yet</div>
+          <div class="conf-lbl">Confidence</div>
+          <div class="conf-bar"><div class="conf-fill" style="width:0%;background:linear-gradient(90deg,var(--amber),#f97316)"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DR AVA -->
+    <div class="card ava-card">
+      <div class="ava-avatar">👩‍⚕️</div>
+      <div class="ava-name">Dr. Ava</div>
+      <div class="ava-role">AI Medical Assistant · SafeMeds</div>
+      <div class="ava-badges">
+        <span class="ava-badge online" id="avaBadge">● Online</span>
+        <span class="ava-badge avail">24/7 Available</span>
+      </div>
+    </div>
+
+    <!-- EMERGENCY ALERT -->
+    <div class="card emergency-card">
+      <div class="emg-title">Emergency Alert Panel</div>
+      <div class="emg-default" id="emgDefault">No active alerts. Chat to begin symptom analysis.</div>
+      <div class="emg-inner" id="emgInner">
+        <div class="alert-label">⚠ HIGH PRIORITY:</div>
+        <p id="emgText">Your symptoms are serious. Please proceed to the nearest Emergency Room or call <strong>911</strong> immediately.</p>
+      </div>
+    </div>
+
+    <!-- SAFETY INFO -->
+    <div class="card safety-card">
+      <div class="safety-title">Safety Information</div>
+      <div class="safety-bar-wrap"><div class="safety-needle" id="safetyNeedle" style="left:10%"></div></div>
+      <div class="safety-bar-lbls"><span>Safe</span><span>Medium</span><span>Critical</span></div>
+      <div class="safety-desc" id="safetyDesc">
+        Describe your symptoms to receive a personalized safety assessment. Always consult a licensed physician for a formal diagnosis.
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+       <!-- FOOTER -->
+    <footer class="footer">
+      <div class="footer-wrapper">
+        <div class="footer-col">
+          <h3 class="footer-brand">SafeMeds</h3>
+          <a href="about.html">About Us</a>
+          <a href="#">Contact Us</a>
+        </div>
+        <div class="footer-col">
+          <h4 class="footer-heading">Support</h4>
+          <a href="#">Pharmacies</a>
+          <a href="#">Web Activities</a>
+          <a href="#">Good Doctor</a>
+        </div>
+        <div class="footer-col">
+          <h4 class="footer-heading">Partner</h4>
+          <a href="#">About</a>
+          <a href="#">Concierge</a>
+          <a href="#">Contact Us</a>
+        </div>
+        <div class="footer-col">
+          <h4 class="footer-heading">Contact</h4>
+          <a href="#">support@safemeds.com</a>
+          <a href="#">+254 700 000 000</a>
+          <a href="#">info@safemeds.com</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>Copyright © 2024 SafeMeds</p>
+        <div class="footer-socials">
+  <a href="https://instagram.com" target="_blank" rel="noopener noreferrer">
+    <img src="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/icons/instagram.svg" width="24" height="24" alt="Instagram" style="filter: invert(1);">
+  </a>
+  
+  <a href="https://facebook.com" target="_blank" rel="noopener noreferrer">
+    <img src="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/icons/facebook.svg" width="24" height="24" alt="Facebook" style="filter: invert(1);">
+  </a>
+  
+  <a href="https://x.com" target="_blank" rel="noopener noreferrer">
+    <img src="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/icons/twitter-x.svg" width="24" height="24" alt="Twitter X" style="filter: invert(1);">
+  </a>
+</div>
+      </div>
+    </footer>
+  </body>
+</html>
+
+<script>
+
+  
+
+// ──────────────────────────────────────────────
+// UTILITIES
+// ──────────────────────────────────────────────
+function now() {
+  return new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+}
+function showToast(msg, dur=2800) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.style.opacity='1';
+  setTimeout(() => t.style.opacity='0', dur);
+}
+
+// ──────────────────────────────────────────────
+// CALENDAR
+// ──────────────────────────────────────────────
+let markedDays = new Set();
+
+function buildCalendar() {
+  const grid = document.getElementById('calGrid');
+  const today = new Date();
+  const yr = today.getFullYear(), mo = today.getMonth();
+  const first = new Date(yr, mo, 1).getDay(); // 0=Sun
+  const daysInMonth = new Date(yr, mo+1, 0).getDate();
+  const labels = ['S','M','T','W','T','F','S'];
+  grid.innerHTML = labels.map(l=>`<div class="cal-lbl">${l}</div>`).join('');
+  for(let i=0;i<first;i++) grid.innerHTML+=`<div class="cal-d empty"></div>`;
+  for(let d=1;d<=daysInMonth;d++) {
+    const isToday = d===today.getDate();
+    const isMarked = markedDays.has(d);
+    grid.innerHTML += `<div class="cal-d${isToday?' today':''}${isMarked&&!isToday?' marked':''}" onclick="toggleDay(${d})">${d}</div>`;
+  }
+}
+
+function toggleDay(d) {
+  if(markedDays.has(d)) markedDays.delete(d); else markedDays.add(d);
+  buildCalendar();
+}
+
+// ──────────────────────────────────────────────
+// DOSAGE REMINDERS
+// ──────────────────────────────────────────────
+let reminders = [];
+
+function addReminder() {
+  const med = document.getElementById('reminderMed').value.trim();
+  const time = document.getElementById('reminderTime').value;
+  if(!med) { showToast('Please enter a medicine name'); return; }
+  reminders.push({med, time, id: Date.now()});
+  document.getElementById('reminderMed').value='';
+  renderReminders();
+  showToast(`⏰ Reminder set: ${med} at ${time}`);
+}
+
+function deleteReminder(id) {
+  reminders = reminders.filter(r=>r.id!==id);
+  renderReminders();
+}
+
+function renderReminders() {
+  const el = document.getElementById('remindersList');
+  if(!reminders.length) { el.innerHTML='<div style="font-size:11.5px;color:var(--gray-400);padding:4px 6px;">No reminders set</div>'; return; }
+  el.innerHTML = reminders.map(r=>`
+    <div class="reminder-row">
+      <span>💊 <strong>${r.med}</strong> — ${r.time}</span>
+      <button class="reminder-del" onclick="deleteReminder(${r.id})">✕</button>
+    </div>`).join('');
+}
+
+// Check reminders every minute
+function checkReminders() {
+  const now2 = new Date();
+  const cur = `${String(now2.getHours()).padStart(2,'0')}:${String(now2.getMinutes()).padStart(2,'0')}`;
+  const due = reminders.find(r=>r.time===cur);
+  const alertEl = document.getElementById('dosageAlert');
+  if(due) {
+    document.getElementById('dosageAlertText').textContent = `Time to take ${due.med}!`;
+    alertEl.style.display='block';
+    showToast(`⏰ Reminder: Take ${due.med} now!`, 5000);
+  } else {
+    alertEl.style.display='none';
+  }
+}
+setInterval(checkReminders, 30000);
+renderReminders();
+
+// ──────────────────────────────────────────────
+// OPEN FDA MEDICINE API
+// ──────────────────────────────────────────────
+async function searchMedicine() {
+  const q = document.getElementById('medSearchInput').value.trim();
+  if(!q) { showToast('Enter a medicine name to search'); return; }
+  const list = document.getElementById('medList');
+  list.innerHTML = '<div class="med-loading">🔍 Searching medicines…</div>';
+
+  const localMatches = findLocalMeds(q);
+  if(localMatches.length) {
+    renderMedResults(localMatches, q);
+    return;
+  }
+
+  try {
+    const url = `https://api.fda.gov/drug/label.json?search=openfda.brand_name:"${encodeURIComponent(q)}"&limit=4`;
+    const res = await fetch(url);
+    const data = await res.json();
+    if(!data.results || !data.results.length) {
+      const url2 = `https://api.fda.gov/drug/label.json?search=openfda.generic_name:"${encodeURIComponent(q)}"&limit=4`;
+      const res2 = await fetch(url2);
+      const data2 = await res2.json();
+      if(!data2.results || !data2.results.length) {
+        if(localMatches.length) {
+          renderMedResults(localMatches, q);
+        } else {
+          list.innerHTML = `<div class="med-loading">No results found for "${q}". Try a different name.</div>`;
+        }
+        return;
+      }
+      renderMedResults(data2.results, q);
+    } else {
+      renderMedResults(data.results, q);
+    }
+  } catch(e) {
+    if(localMatches.length) {
+      renderMedResults(localMatches, q);
+    } else {
+      list.innerHTML = `<div class="med-loading">⚠ Could not reach external database. Showing local medicine guide instead.</div>`;
+      setTimeout(() => renderMedResults(Object.entries(staticMeds).map(([key, value]) => ({ ...value, key, source:'static' })), q), 700);
+    }
+  }
+}
+
+function findLocalMeds(q) {
+  const term = q.toLowerCase();
+  return Object.entries(staticMeds).filter(([key, med]) => {
+    return med.brand.toLowerCase().includes(term)
+      || med.generic.toLowerCase().includes(term)
+      || med.purpose.toLowerCase().includes(term)
+      || key.includes(term);
+  }).map(([key, med]) => ({ ...med, key, source:'static' }));
+}
+
+const medEmojis = ['💊','💉','🧪','🩺','🫀','🧬','🩹','💆'];
+function renderMedResults(results, q) {
+  const list = document.getElementById('medList');
+  list.innerHTML = '';
+  if(!results.length) {
+    list.innerHTML = `<div class="med-loading">No matches found for "${q}".</div>`;
+    return;
+  }
+  results.forEach((r, i) => {
+    const brand = r.brand || r.openfda?.brand_name?.[0] || q;
+    const generic = r.generic || r.openfda?.generic_name?.[0] || 'Generic';
+    const purpose = r.purpose || r.purpose?.[0] || r.indications_and_usage?.[0] || 'See label for details';
+    const emoji = medEmojis[i % medEmojis.length];
+    const badgeText = r.source === 'static' ? 'Local' : 'FDA ✓';
+    const div = document.createElement('div');
+    div.className = 'med-item';
+    div.innerHTML = `
+      <div class="med-img">${emoji}</div>
+      <div><div class="med-name">${brand}</div><div class="med-desc">${generic}</div></div>
+      <div class="med-badge" style="font-size:10px;max-width:70px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${purpose}">${badgeText}</div>`;
+    div.onclick = () => {
+      if(r.source === 'static') {
+        openMedDetail(r.key);
+      } else {
+        openMedFromData(r, brand, generic);
+      }
+    };
+    list.appendChild(div);
+  });
+}
+
+function openMedFromData(r, brand, generic) {
+  const content = document.getElementById('medModalContent');
+  const purpose = r.purpose?.[0] || r.indications_and_usage?.[0] || 'Not specified';
+  const dosage = r.dosage_and_administration?.[0] || 'Follow prescriber instructions.';
+  const warnings = r.warnings?.[0] || r.warnings_and_cautions?.[0] || 'See full prescribing information.';
+  const interactions = r.drug_interactions?.[0] || 'Consult your pharmacist for drug interactions.';
+  const sideEffects = r.adverse_reactions?.[0] || 'See label for adverse reactions.';
+
+  content.innerHTML = `
+    <div class="med-modal-title">💊 ${brand}</div>
+    <div class="med-modal-brand">Generic: ${generic} · Source: FDA Drug Labels</div>
+    <div class="med-modal-section">Purpose / Indications</div>
+    <div class="med-modal-text">${purpose.substring(0,300)}${purpose.length>300?'…':''}</div>
+    <div class="med-modal-section">Dosage &amp; Administration</div>
+    <div class="med-modal-text">${dosage.substring(0,300)}${dosage.length>300?'…':''}</div>
+    <div class="med-modal-section">⚠ Warnings</div>
+    <div class="med-modal-text" style="color:#b91c1c">${warnings.substring(0,300)}${warnings.length>300?'…':''}</div>
+    <div class="med-modal-section">Drug Interactions</div>
+    <div class="med-modal-text">${interactions.substring(0,250)}${interactions.length>250?'…':''}</div>
+    <div class="med-modal-section">Side Effects</div>
+    <div class="med-modal-text">${sideEffects.substring(0,250)}${sideEffects.length>250?'…':''}</div>
+    <p style="font-size:10.5px;color:var(--gray-400);margin-top:14px">⚕ This information is sourced from the FDA drug label database. Always consult a licensed healthcare provider before starting or changing any medication.</p>`;
+  document.getElementById('medModal').classList.add('show');
+}
+
+// Static built-in meds
+const staticMeds = {
+  ibuprofen:{brand:'Ibuprofen (Advil / Motrin)',generic:'Ibuprofen',purpose:'Relief of mild to moderate pain, fever, and inflammation.',dosage:'Adults: 200–400 mg every 4–6 hours as needed. Max 1200 mg/day OTC.',warnings:'Do not use if you have stomach ulcers, kidney disease, or are taking blood thinners. Avoid in last trimester of pregnancy.',interactions:'Blood thinners (warfarin), aspirin, ACE inhibitors, lithium.',sideEffects:'Stomach pain, nausea, heartburn, dizziness, increased blood pressure.'},
+  cetirizine:{brand:'Cetirizine (Zyrtec)',generic:'Cetirizine HCl',purpose:'Relief of hay fever, allergic rhinitis, and chronic hives.',dosage:'Adults: 10 mg once daily. Reduce dose if kidney impairment.',warnings:'May cause drowsiness. Avoid alcohol. Use with caution in elderly patients.',interactions:'Alcohol, CNS depressants, ritonavir (increases cetirizine levels).',sideEffects:'Drowsiness, dry mouth, fatigue, headache.'},
+  metformin:{brand:'Metformin (Glucophage)',generic:'Metformin HCl',purpose:'Management of type 2 diabetes mellitus.',dosage:'Initial: 500 mg twice daily with meals. Max: 2550 mg/day.',warnings:'Risk of lactic acidosis. Discontinue before contrast imaging. Avoid with severe kidney impairment (eGFR <30).',interactions:'Alcohol, iodinated contrast dyes, cimetidine, topiramate.',sideEffects:'GI upset, nausea, diarrhea (especially at start), vitamin B12 deficiency long-term.'},
+  amoxicillin:{brand:'Amoxicillin (Amoxil)',generic:'Amoxicillin trihydrate',purpose:'Treatment of bacterial infections: ear, throat, lung, skin, urinary tract.',dosage:'Adults: 250–500 mg every 8 hours or 500–875 mg every 12 hours for 7–14 days.',warnings:'Penicillin allergy risk — ask about allergies before use. Risk of C. diff overgrowth.',interactions:'Methotrexate, warfarin, other antibiotics (tetracyclines may reduce effect).',sideEffects:'Diarrhea, rash, nausea, vomiting, allergic reactions.'}
+};
+
+function openMedDetail(key) {
+  const m = staticMeds[key]; if(!m) return;
+  const content = document.getElementById('medModalContent');
+  content.innerHTML = `
+    <div class="med-modal-title">💊 ${m.brand}</div>
+    <div class="med-modal-brand">Generic: ${m.generic}</div>
+    <div class="med-modal-section">Purpose / Indications</div><div class="med-modal-text">${m.purpose}</div>
+    <div class="med-modal-section">Dosage &amp; Administration</div><div class="med-modal-text">${m.dosage}</div>
+    <div class="med-modal-section">⚠ Warnings</div><div class="med-modal-text" style="color:#b91c1c">${m.warnings}</div>
+    <div class="med-modal-section">Drug Interactions</div><div class="med-modal-text">${m.interactions}</div>
+    <div class="med-modal-section">Side Effects</div><div class="med-modal-text">${m.sideEffects}</div>
+    <p style="font-size:10.5px;color:var(--gray-400);margin-top:14px">⚕ Always consult a licensed healthcare provider before starting or changing any medication.</p>`;
+  document.getElementById('medModal').classList.add('show');
+}
+
+function closeMedModal(e) {
+  if(e.target===document.getElementById('medModal')) document.getElementById('medModal').classList.remove('show');
+}
+
+// ──────────────────────────────────────────────
+// AI CHAT — Claude API
+// ──────────────────────────────────────────────
+let chatHistory = [];
+let isTyping = false;
+
+const SYSTEM_PROMPT = `You are Dr. Ava, a compassionate and professional AI health assistant for SafeMeds. Your role is to help users understand their symptoms and guide them toward appropriate care.
+
+Guidelines:
+- Be warm, empathetic, and clear. Never be alarmist unless symptoms are genuinely serious.
+- For each response, always end with a JSON block (wrapped in <<<JSON and >>>) that contains:
+  {
+    "condition1": { "name": "Possible Condition Name", "confidence": 60 },
+    "condition2": { "name": "Another Possible Condition", "confidence": 35 },
+    "severity": "low" | "medium" | "high" | "emergency",
+    "actions": ["Action 1", "Action 2", "Action 3"],
+    "safetyLevel": 15
+  }
+  where safetyLevel is 0-100 (0=safe, 100=critical emergency).
+- Keep your conversational response BEFORE the JSON block, under 120 words.
+- Always add a disclaimer that you're not a substitute for professional medical advice.
+- If symptoms suggest emergency (chest pain, difficulty breathing, stroke signs, severe bleeding), set severity to "emergency" and safetyLevel to 85+.
+- Suggest relevant medicines from: Ibuprofen, Cetirizine, Paracetamol, Amoxicillin, Metformin, Antihistamines, Antacids, etc.`;
+
+function appendMessage(role, text, isAlert=false) {
+  const messages = document.getElementById('chatMessages');
+  const div = document.createElement('div');
+  const t = now();
+  if(role==='user') {
+    div.className = 'msg user';
+    div.innerHTML = `<div class="msg-avatar user-av">👤</div><div><div class="msg-bubble">${text}</div><div class="msg-time">${t}</div></div>`;
+  } else {
+    div.className = `msg dr${isAlert?' alert-msg':''}`;
+    div.innerHTML = `<div class="msg-avatar">👩‍⚕️</div><div><div class="msg-bubble">${text}</div><div class="msg-time">${t}</div></div>`;
+  }
+  messages.appendChild(div);
+  messages.scrollTop = messages.scrollHeight;
+  return div;
+}
+
+function setTyping(on) {
+  isTyping = on;
+  document.getElementById('typingIndicator').className = 'typing-indicator' + (on?' show':'');
+  document.getElementById('sendBtn').disabled = on;
+  document.getElementById('chatInput').disabled = on;
+  document.getElementById('avaBadge').textContent = on ? '● Typing…' : '● Online';
+}
+
+function updateSidePanel(parsed) {
+  // Conditions
+  if(parsed.condition1 || parsed.condition2) {
+    document.getElementById('condSubText').textContent = 'Based on real-time symptom analysis';
+    const row = document.getElementById('condRow');
+    const c1 = parsed.condition1 || {name:'—', confidence:0};
+    const c2 = parsed.condition2 || {name:'—', confidence:0};
+    row.innerHTML = `
+      <div class="cond-item">
+        <div class="cond-name">${c1.name}</div>
+        <div class="conf-lbl">Confidence ${c1.confidence}%</div>
+        <div class="conf-bar"><div class="conf-fill" style="width:${c1.confidence}%"></div></div>
+      </div>
+      <div class="cond-item">
+        <div class="cond-name">${c2.name}</div>
+        <div class="conf-lbl">Confidence ${c2.confidence}%</div>
+        <div class="conf-bar"><div class="conf-fill" style="width:${c2.confidence}%;background:linear-gradient(90deg,var(--amber),#f97316)"></div></div>
+      </div>`;
+  }
+  // Safety needle
+  const sl = Math.min(100, Math.max(0, parsed.safetyLevel || 10));
+  document.getElementById('safetyNeedle').style.left = sl + '%';
+  // Safety desc
+  const descs = {
+    low:'Your current symptoms appear mild. Monitor closely and rest. Consult a doctor if symptoms worsen.',
+    medium:'Your symptoms suggest moderate concern. Consider visiting a clinic for proper evaluation.',
+    high:'Your symptoms require prompt medical attention. Please see a doctor today.',
+    emergency:'⚠ EMERGENCY: Your symptoms may be life-threatening. Call 911 or go to the nearest ER immediately.'
+  };
+  document.getElementById('safetyDesc').textContent = descs[parsed.severity] || descs.low;
+  // Emergency panel
+  const emgInner = document.getElementById('emgInner');
+  const emgDefault = document.getElementById('emgDefault');
+  if(parsed.severity==='emergency' || sl >= 75) {
+    emgInner.classList.add('show');
+    emgDefault.style.display='none';
+    document.getElementById('emgText').innerHTML = 'Your symptoms are serious. Please proceed to the nearest Emergency Room or call <strong>911</strong> immediately.';
+  } else if(parsed.severity==='high') {
+    emgInner.classList.add('show');
+    emgDefault.style.display='none';
+    document.getElementById('emgText').innerHTML = 'Your symptoms warrant prompt medical attention. Please visit a clinic or urgent care today.';
+  } else {
+    emgInner.classList.remove('show');
+    emgDefault.style.display='block';
+  }
+  // Actions
+  if(parsed.actions && parsed.actions.length) {
+    const icons=['blue','teal','green','gray'];
+    const syms=['▶','💧','✓','⚙'];
+    document.getElementById('actionsList').innerHTML = parsed.actions.slice(0,4).map((a,i)=>`
+      <div class="action-item">
+        <div class="action-icon ${icons[i]}">${syms[i]}</div>
+        <div class="action-text">${a}</div>
+      </div>`).join('');
+  }
+  // Update history preview
+  const sub = document.getElementById('h-sub-0');
+  if(sub) sub.textContent = (parsed.condition1?.name || 'Symptom analysis') + '…';
+  const hTime = document.getElementById('h-time-0');
+  if(hTime) hTime.textContent = now();
+}
+
+async function sendMessage(text) {
+  const input = document.getElementById('chatInput');
+  const userText = text || input.value.trim();
+  if(!userText || isTyping) return;
+  input.value = '';
+  // Hide chips after first use
+  document.getElementById('suggestionChips').style.display='none';
+  appendMessage('user', userText);
+  chatHistory.push({role:'user', content: userText});
+  setTyping(true);
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        model:'claude-sonnet-4-6',
+        max_tokens:1000,
+        system: SYSTEM_PROMPT,
+        messages: chatHistory
+      })
+    });
+    const data = await res.json();
+    const fullText = data.content?.[0]?.text || "I'm sorry, I couldn't process that. Please try again.";
+    // Split conversational part from JSON
+    const jsonMatch = fullText.match(/<<<JSON([\s\S]*?)>>>/);
+    let displayText = fullText.replace(/<<<JSON[\s\S]*?>>>/g,'').trim();
+    if(!displayText) displayText = "I'm having trouble right now. Please try again.";
+    // Determine if emergency
+    let parsed = {};
+    if(jsonMatch) {
+      try { parsed = JSON.parse(jsonMatch[1].trim()); } catch(e) {}
+    }
+    const isEmergency = parsed.severity === 'emergency' || (parsed.safetyLevel || 0) >= 75;
+    appendMessage('dr', displayText, isEmergency);
+    chatHistory.push({role:'assistant', content: fullText});
+    updateSidePanel(parsed);
+  } catch(e) {
+    appendMessage('dr', "I'm having trouble connecting right now. Please check your internet and try again. For urgent symptoms, always call your local emergency number.");
+  }
+  setTyping(false);
+}
+
+function useChip(el) {
+  sendMessage(el.textContent);
+}
+
+function analyzeSymptoms(text) {
+  const lower = text.toLowerCase();
+  const conditions = [];
+  let severity = 'low';
+  let safetyLevel = 20;
+  const actions = [];
+
+  const add = (name, confidence) => conditions.push({ name, confidence });
+
+  if(/chest pain|shortness of breath|difficulty breathing|pressure in chest|tightness/.test(lower)) {
+    add('Possible Cardiac Distress', 88);
+    add('Seek Emergency Care', 72);
+    severity = 'emergency';
+    safetyLevel = 90;
+    actions.push('Call emergency services immediately.');
+    actions.push('Stop all activity and rest while waiting for help.');
+    actions.push('Share your symptoms with first responders.');
+  } else if(/severe headache|migraine|vision changes|stiff neck|high fever/.test(lower)) {
+    add('Severe Migraine or Neurological Concern', 78);
+    add('Monitor fever and symptoms closely', 55);
+    severity = 'high';
+    safetyLevel = 70;
+    actions.push('Rest in a quiet, dark room.');
+    actions.push('Stay hydrated and consider acetaminophen if appropriate.');
+    actions.push('See a doctor if symptoms worsen.');
+  } else if(/fever|cough|sore throat|runny nose|cold/.test(lower)) {
+    add('Viral Upper Respiratory Infection', 70);
+    add('Possible Seasonal Cold', 52);
+    severity = 'medium';
+    safetyLevel = 45;
+    actions.push('Rest and drink plenty of fluids.');
+    actions.push('Use warm salt-water gargles for sore throat.');
+    actions.push('Consider antihistamines or decongestants as needed.');
+  } else if(/allergy|itchy eyes|sneezing|pollen|hay fever/.test(lower)) {
+    add('Allergic Reaction', 74);
+    add('Possible Allergic Rhinitis', 58);
+    severity = 'medium';
+    safetyLevel = 35;
+    actions.push('Avoid known allergens and keep windows closed.');
+    actions.push('Try an antihistamine such as cetirizine.');
+    actions.push('Speak with a healthcare provider for long-term relief.');
+  } else if(/stomach ache|nausea|vomit|diarrhea|indigestion/.test(lower)) {
+    add('Gastrointestinal Discomfort', 68);
+    add('Possible Indigestion', 50);
+    severity = 'medium';
+    safetyLevel = 40;
+    actions.push('Eat light meals and drink water.');
+    actions.push('Avoid spicy or greasy foods.');
+    actions.push('See a doctor if pain becomes severe.');
+  } else if(/diabetes|blood sugar|metformin/.test(lower)) {
+    add('Diabetes Management Concern', 72);
+    add('Monitor blood sugar levels closely', 60);
+    severity = 'medium';
+    safetyLevel = 45;
+    actions.push('Follow your current medication plan.');
+    actions.push('Check blood glucose regularly.');
+    actions.push('Consult your physician for dosage questions.');
+  } else if(/pain|ache|discomfort/.test(lower)) {
+    add('Mild Pain or Discomfort', 60);
+    add('General Symptom Monitoring', 38);
+    severity = 'low';
+    safetyLevel = 25;
+    actions.push('Rest and stay hydrated.');
+    actions.push('Consider over-the-counter relief like ibuprofen if suitable.');
+    actions.push('Contact a doctor if symptoms persist.');
+  } else {
+    add('General Symptom Review', 50);
+    add('Need more detail for accurate advice', 35);
+    severity = 'low';
+    safetyLevel = 20;
+    actions.push('Describe your symptoms in more detail.');
+    actions.push('Stay hydrated and rest.');
+    actions.push('Consult a licensed healthcare provider if unsure.');
+  }
+
+  if(actions.length < 3) {
+    actions.push('Keep symptom notes to share with a provider.');
+  }
+
+  return { condition1: conditions[0], condition2: conditions[1], severity, actions, safetyLevel };
+}
+
+function buildDoctorReply(text, parsed) {
+  const base = [];
+  if(parsed.severity === 'emergency') {
+    base.push('Your symptoms appear serious and may require immediate medical attention.');
+  } else if(parsed.severity === 'high') {
+    base.push('These symptoms deserve prompt attention from a healthcare professional.');
+  } else if(parsed.severity === 'medium') {
+    base.push('This looks like a manageable concern, but please monitor it closely.');
+  } else {
+    base.push('Things seem mild right now, but keep an eye on how you feel.');
+  }
+  if(/fever|cough|sore throat/.test(text.toLowerCase())) {
+    base.push('Rest, fluids, and gentle self-care can help you recover.');
+  }
+  if(/headache|migraine/.test(text.toLowerCase())) {
+    base.push('Try resting in a quiet room and consider mild pain relief if needed.');
+  }
+  if(/allergy|itchy|sneezing/.test(text.toLowerCase())) {
+    base.push('Avoid triggers and consider an antihistamine.');
+  }
+  base.push('I am not a substitute for professional medical advice.');
+  return `${base.join(' ')} \n\nPlease describe any additional symptoms for better guidance.`;
+}
+
+// ──────────────────────────────────────────────
+async function sendMessage(text) {
+  const input = document.getElementById('chatInput');
+  const userText = text || input.value.trim();
+  if(!userText || isTyping) return;
+  input.value = '';
+  document.getElementById('suggestionChips').style.display='none';
+  appendMessage('user', userText);
+  chatHistory.push({role:'user', content: userText});
+  setTyping(true);
+
+  await new Promise(r => setTimeout(r, 500));
+
+  const parsed = analyzeSymptoms(userText);
+  const displayText = buildDoctorReply(userText, parsed);
+  const isEmergency = parsed.severity === 'emergency' || parsed.safetyLevel >= 75;
+  appendMessage('dr', displayText, isEmergency);
+  chatHistory.push({role:'assistant', content: `${displayText}\n<<<JSON${JSON.stringify(parsed)}>>>`});
+  updateSidePanel(parsed);
+  setTyping(false);
+}
+
+// ──────────────────────────────────────────────
+// CONVERSATION HISTORY sessions
+// ──────────────────────────────────────────────
+const pastSessions = [
+  null, // current = live
+  [{role:'dr',text:"Hello! How can I help you today?"},{role:'user',text:"Just a general check-in, feeling fine"},{role:'dr',text:"Great to hear! Keep up healthy habits — stay hydrated, sleep 7-8 hours, and exercise regularly. Come back anytime."}],
+  [{role:'dr',text:"Hello! What symptoms are you experiencing?"},{role:'user',text:"I've had a persistent headache since morning"},{role:'dr',text:"Headaches can have many causes. Try resting in a quiet, dark room and stay hydrated. If it's severe or accompanied by fever/stiff neck, please seek care immediately."}],
+  [{role:'dr',text:"Hello! How can I assist?"},{role:'user',text:"Follow-up on my allergy symptoms"},{role:'dr',text:"Allergy symptoms like sneezing and itchy eyes can be managed with antihistamines like Cetirizine. Avoid known triggers and keep windows closed during high pollen season."}]
+];
+
+function loadSession(idx, el) {
+  document.querySelectorAll('.history-item').forEach(i=>i.classList.remove('active'));
+  el.classList.add('active');
+  if(idx===0) {
+    showToast('Current session active'); return;
+  }
+  const session = pastSessions[idx];
+  const messages = document.getElementById('chatMessages');
+  messages.innerHTML='';
+  session.forEach(m=>{
+    const div = document.createElement('div');
+    div.className = `msg ${m.role==='user'?'user':'dr'}`;
+    if(m.role==='user') {
+      div.innerHTML=`<div class="msg-avatar user-av">👤</div><div><div class="msg-bubble">${m.text}</div></div>`;
+    } else {
+      div.innerHTML=`<div class="msg-avatar">👩‍⚕️</div><div><div class="msg-bubble">${m.text}</div></div>`;
+    }
+    messages.appendChild(div);
+  });
+  messages.scrollTop = messages.scrollHeight;
+  document.getElementById('suggestionChips').style.display='none';
+  showToast('Loaded previous session (read-only)');
+}
+
+
+buildCalendar();
+</script>
+</body>
+</html>

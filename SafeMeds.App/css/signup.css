@@ -1,0 +1,190 @@
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  background-image:
+    linear-gradient(rgba(0, 114, 154, 0.5), rgba(0, 80, 115, 0.6)),
+    url("../images/background-image1.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  font-family: "Fredoka", sans-serif;
+  font-size: 16px;
+  color: #ffffff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+h1 {
+  font-family: "Elms Sans", sans-serif;
+  font-weight: 700;
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+}
+
+.input-field {
+  width: 275px;
+  padding: 12px;
+  border: none;
+  border-radius: 20px;
+  color: #ffffff;
+  text-align: center;
+  outline: none;
+  margin-bottom: 30px;
+  background: rgba(0, 0, 0, 0.15) !important;
+  border: none !important;
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.1),
+    0 4px 6px rgba(0, 0, 0, 0.2);
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+.input-field::placeholder {
+  color: rgba(0, 0, 0, 0.2);
+}
+
+.login-btn {
+  width: 150px;
+  padding: 12px;
+  background-color: #2563eb;
+  text-transform: uppercase;
+  border: none;
+  border-radius: 25px;
+  font-weight: bold;
+  color: #ffffff;
+  margin-bottom: 20px;
+  cursor: pointer;
+}
+
+.login-btn:hover {
+  background-color: #1d4ed8;
+  cursor: pointer;
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-size: 12px;
+  letter-spacing: 1px;
+  width: 100%;
+  max-width: 300px;
+  margin: 20px 0;
+  font-weight: bold;
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  flex: 1;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.divider::before {
+  margin-right: 10px;
+}
+.divider::after {
+  margin-left: 10px;
+}
+
+.whatsapp-btn {
+  background-color: #4fce5d;
+  width: 200px;
+  padding: 12px;
+  border: none;
+  border-radius: 25px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  display: block;
+  cursor: pointer;
+  margin: 0 auto 10px auto;
+  color: #ffffff;
+}
+
+.facebook-btn {
+  background-color: #1877f2;
+  width: 200px;
+  padding: 12px;
+  border: none;
+  border-radius: 25px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  display: block;
+  cursor: pointer;
+  margin: 0 auto 10px auto;
+  color: #ffffff;
+}
+
+.google-btn {
+  background-color: #ffffff;
+  width: 200px;
+  padding: 12px;
+  border: none;
+  border-radius: 25px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  display: block;
+  cursor: pointer;
+  margin: 0 auto 10px auto;
+}
+
+.login-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+  max-width: 350px;
+}
+
+.whatsapp-btn i,
+.facebook-btn i,
+.google-btn i {
+  margin-right: 10px;
+  font-size: 1.1rem;
+}
+
+.auth-message {
+  width: 275px;
+  margin: 0 auto 16px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.auth-error {
+  background: rgba(239, 68, 68, 0.2);
+  border: 1px solid rgba(239, 68, 68, 0.5);
+}
+
+.auth-success {
+  background: rgba(34, 197, 94, 0.2);
+  border: 1px solid rgba(34, 197, 94, 0.5);
+}
+
+.login-card a {
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.google-btn .fa-google {
+  background: linear-gradient(
+    135deg,
+    #4285f4 0%,
+    #4285f4 45%,
+    #ea4335 45%,
+    #ea4335 70%,
+    #fbbc05 70%,
+    #fbbc05 85%,
+    #34a853 85%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+}

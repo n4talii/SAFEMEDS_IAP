@@ -1,0 +1,25 @@
+{
+  "name": "safemeds.app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "npx --yes serve . -l 3000",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mogaya-18/SafeMeds.App.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Mogaya-18/SafeMeds.App/issues"
+  },
+  "homepage": "https://github.com/Mogaya-18/SafeMeds.App#readme",
+  "dependencies": {
+    "firebase": "^12.15.0"
+  }
+}

@@ -1,0 +1,408 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard Page</title>
+    <link rel="stylesheet" href="../css/global.css" />
+    <link rel="stylesheet" href="../css/dashboard.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <div class="sidebar">
+      <h1 class="sidebar-buttons">
+        <a href="landing.html" class="sidebar-close-btn">
+          <i class="fa-solid"></i>
+          <img src="../images/MediFindLogo.png" alt="MediFind Logo" />
+          <span>SafeMeds</span>
+        </a>
+      </h1>
+      <a href="#" class="sidebar-buttons">
+        <i class="fa-solid fa-table-cells-large"></i>
+        <span>Dashboard Overview</span>
+      </a>
+      <a class="sidebar-buttons">
+        <i class="fa-solid fa-box-archive"></i>
+        <span>Inventory Management</span>
+      </a>
+      <a class="sidebar-buttons">
+        <i class="fa-solid fa-clipboard-list"></i>
+        <span>Orders & Fulfilment</span>
+      </a>
+      <a class="sidebar-buttons">
+        <i class="fa-solid fa-chart-line"></i>
+        <span>Sales & Reporting</span>
+      </a>
+      <a class="sidebar-buttons">
+        <i class="fa-solid fa-comment-dots"></i>
+        <span>Customer Feedback</span>
+      </a>
+      <a class="sidebar-buttons">
+        <i class="fa-solid fa-user-group"></i>
+        <span>Staff Management</span>
+      </a>
+      <a class="sidebar-buttons">
+        <i class="fa-solid fa-gear"></i>
+        <span>Settings</span>
+      </a>
+    </div>
+
+    <div class="dashboard-header">
+      <h2 class="metric-title">Dashboard Overview</h2>
+      <div class="top-header-profile-bar">
+        <div class="user-info-side">
+          <img
+            src="https://i.pravatar.cc/150?img=33"
+            alt="User Avatar"
+            class="profile-avatar"
+          />
+          <span class="profile-name">Nathan Chacha (Owner)</span>
+        </div>
+        <i class="fa-solid fa-gear settings-icon"></i>
+      </div>
+    </div>
+    <!-------------------------------------- The Widgets-------------------------------------------------->
+
+    <!------------------------------------ Widget 1 ------------------------------------------>
+    <main class="dashboard-workspace">
+      <div class="metric-total-meds">
+        <div class="meds">
+          <span>Total Meds</span>
+          <span class="new">New</span>
+        </div>
+        <div class="numbers">
+          <span class="num">2450</span>
+          <span class="trend-group">
+            <i class="fa-solid fa-arrow-trend-up"></i>
+            <span>+ 3%</span>
+          </span>
+        </div>
+      </div>
+
+      <!-------------------------------------- Widget 2 ---------------------------------->
+      <div class="metric-low-stock">
+        <div class="stock">
+          <div class="widget-header">
+            <span>Low Stock Alerts</span>
+            <span class="alert-icon">!</span>
+          </div>
+          <span class="red">12 in RED</span>
+          <hr class="separator" />
+          <ol class="meds-list">
+            <li>
+              <span class="meds-name">1. Paracetamol</span>
+              <span class="meds-status">RED</span>
+            </li>
+            <li>
+              <span class="meds-name">2. Metformin</span>
+              <span class="meds-status">RED</span>
+            </li>
+            <li>
+              <span class="meds-name">3. Metformin</span>
+              <span class="meds-status">RED</span>
+            </li>
+          </ol>
+        </div>
+      </div>
+
+      <!----------------------------------- Widget 3 -------------------------------------->
+      <div class="metric-monthly-sales">
+        <div class="sales">
+          <span>Monthly Sales</span>
+          <span class="sales-new">New</span>
+        </div>
+        <div class="sales-money">
+          <span>$20,000</span>
+        </div>
+        <div class="mini-chart-container">
+          <div class="chart-column">
+            <div class="chart-bar" style="--bar-height: 30%"></div>
+            <span class="chart-label">Jan</span>
+          </div>
+
+          <div class="chart-column">
+            <div class="chart-bar" style="--bar-height: 55%"></div>
+            <span class="chart-label">Feb</span>
+          </div>
+
+          <div class="chart-column">
+            <div class="chart-bar" style="--bar-height: 35%"></div>
+            <span class="chart-label">Mar</span>
+          </div>
+
+          <div class="chart-column">
+            <div class="chart-bar" style="--bar-height: 70%"></div>
+            <span class="chart-label">Apr</span>
+          </div>
+
+          <div class="chart-column">
+            <div class="chart-bar" style="--bar-height: 50%"></div>
+            <span class="chart-label">Jun</span>
+          </div>
+
+          <div class="chart-column">
+            <div class="chart-bar" style="--bar-height: 60%"></div>
+            <span class="chart-label">Aug</span>
+          </div>
+
+          <div class="chart-column">
+            <div class="chart-bar" style="--bar-height: 90%"></div>
+            <span class="chart-label highlight-bar">Oct</span>
+          </div>
+
+          <div class="chart-column">
+            <div class="chart-bar" style="--bar-height: 65%"></div>
+            <span class="chart-label">Nov</span>
+          </div>
+
+          <div class="chart-column">
+            <div class="chart-bar" style="--bar-height: 80%"></div>
+            <span class="chart-label">Dec</span>
+          </div>
+        </div>
+      </div>
+
+      <!------------------------------------ Widget 4 ------------------------------->
+      <div class="metric-orders-received">
+        <div class="order">
+          <span>Orders Received</span>
+          <span class="order-new">New</span>
+        </div>
+        <div class="progress-widget">
+          <div class="circular-ring">
+            <div class="ring-center-content">
+              <span class="ring-number">98</span>
+              <span class="ring-label">today</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!------------------------------------ Widget 5 --------------------------------->
+      <div class="metric-inventory">
+        <div class="inventory-widget">
+          <div class="header-row">
+            <h2 class="text-management">Inventory Management</h2>
+            <div class="controls-group">
+              <input class="metric-filter" placeholder="filter" />
+              <button class="filter-button">Filter</button>
+            </div>
+          </div>
+          <div class="table-container">
+            <div class="table-header">
+              <input class="metric-checkbox" type="checkbox" />
+              <div class="col-name">Item Name</div>
+              <div class="col-sku">SKU</div>
+              <div class="col-cat">Category</div>
+              <div class="col-stock">Current Stock</div>
+              <div class="col-reorder">Reorder Point</div>
+              <div class="col-restocked">Last Restocked</div>
+              <div class="col-rating">Safety Rating</div>
+              <div class="col-action">Action</div>
+            </div>
+
+            <div class="table-row">
+              <!-- First Row Data -->
+              <input class="metric-checkbox" type="checkbox" />
+              <div class="col-name">
+                <span>Paracetamol</span>
+              </div>
+              <div class="col-sku">1000</div>
+              <div class="col-cat">Pain Relief</div>
+              <div class="col-stock">250</div>
+              <div class="col-reorder">30</div>
+              <div class="col-restocked">Jul 1, 2026</div>
+              <div class="col-rating">
+                <span class="badge badge-green">Green</span>
+              </div>
+              <div class="col-action">
+                <a href="#">Edit</a> / <a href="#">Order</a>
+              </div>
+            </div>
+            <div class="table-row">
+              <!-- Second Row Data -->
+              <input class="metric-checkbox" type="checkbox" />
+              <div class="col-name">
+                <span>Ibuprofen</span>
+              </div>
+              <div class="col-sku">2300</div>
+              <div class="col-cat">Antibiotics</div>
+              <div class="col-stock">100</div>
+              <div class="col-reorder">40</div>
+              <div class="col-restocked">Apr 16, 2026</div>
+              <div class="col-rating">
+                <span class="badge badge-yellow">Yellow</span>
+              </div>
+              <div class="col-action">
+                <a href="#">Edit</a> / <a href="#">Order</a>
+              </div>
+            </div>
+            <div class="table-row">
+              <!-- Third Row Data -->
+              <input class="metric-checkbox" type="checkbox" />
+              <div class="col-name">
+                <span>Cetrizine</span>
+              </div>
+              <div class="col-sku">3400</div>
+              <div class="col-cat">Vitamins</div>
+              <div class="col-stock">80</div>
+              <div class="col-reorder">20</div>
+              <div class="col-restocked">Feb 27, 2026</div>
+              <div class="col-rating">
+                <span class="badge badge-red">red</span>
+              </div>
+              <div class="col-action">
+                <a href="#">Edit</a> / <a href="#">Order</a>
+              </div>
+            </div>
+            <div class="table-row">
+              <!-- Forth Row Data -->
+              <input class="metric-checkbox" type="checkbox" />
+              <div class="col-name">
+                <span>Cetrizine</span>
+              </div>
+              <div class="col-sku">4500</div>
+              <div class="col-cat">Chronic</div>
+              <div class="col-stock">65</div>
+              <div class="col-reorder">55</div>
+              <div class="col-restocked">Jan 17, 2026</div>
+              <div class="col-rating">
+                <span class="badge badge-green">Green</span>
+              </div>
+              <div class="col-action">
+                <a href="#">Edit</a> / <a href="#">Order</a>
+              </div>
+            </div>
+            <div class="table-row">
+              <!-- Forth Row Data -->
+              <input class="metric-checkbox" type="checkbox" />
+              <div class="col-name">
+                <span>Maecetamo</span>
+              </div>
+              <div class="col-sku">6500</div>
+              <div class="col-cat">Chronic M...</div>
+              <div class="col-stock">95</div>
+              <div class="col-reorder">158</div>
+              <div class="col-restocked">May 04, 2026</div>
+              <div class="col-rating">
+                <span class="badge badge-green">Green</span>
+              </div>
+              <div class="col-action">
+                <a href="#">Edit</a> / <a href="#">Order</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="dashboard-right-sidebar">
+        <!--------------------------------------- Widget 6 -------------------------------->
+        <div class="metric-notifications">
+          <div class="notification">
+            <span class="notif-title">Notifications</span>
+            <div class="header-actions">
+              <div class="bell-badge-wrapper">
+                <i class="fa-regular fa-bell bell-icon"></i>
+                <span class="red-badge-dot"></span>
+              </div>
+              <i class="fa-solid fa-chevron-down dropdown-icon"></i>
+            </div>
+          </div>
+          <div class="notifications-list">
+            <div class="notif-item">
+              <div class="notif-icon-wrapper">
+                <i class="fa-regular fa-bell normal-bell"></i>
+                <span class="notif-red-dot"></span>
+              </div>
+              <span class="notif-text">Order #1234 packed</span>
+            </div>
+
+            <div class="notif-item active-highlight">
+              <div class="notif-icon-wrapper">
+                <i class="fa-solid fa-triangle-exclamation warning-icon"></i>
+              </div>
+              <span class="notif-text">Low stock on Ibuprofen</span>
+            </div>
+
+            <div class="notif-item">
+              <div class="notif-icon-wrapper">
+                <i class="fa-regular fa-bell normal-bell"></i>
+              </div>
+              <span class="notif-text">Low stock on Metformin</span>
+            </div>
+
+            <div class="notif-item">
+              <div class="notif-icon-wrapper">
+                <i class="fa-regular fa-bell normal-bell"></i>
+              </div>
+              <span class="notif-text">Order #1234 packed</span>
+            </div>
+          </div>
+        </div>
+        <!------------------------------------ Widget 7 ----------------------------->
+        <div class="metric-reviews">
+          <div class="review">
+            <span class="rating">Customer Reviews and Ratings</span>
+          </div>
+          <div class="review-item">
+            <div class="review-avatar-wrapper">
+              <i class="fa-solid fa-user-circle default-avatar"></i>
+            </div>
+
+            <div class="review-content-block">
+              <div class="review-header-row">
+                <span class="reviewer-name">Noel Maids</span>
+                <span class="rewiew-meta">12 mg</span>
+              </div>
+
+              <div class="review-stars-row">
+                <i class="fa-solid fa-star star-filled"></i>
+                <i class="fa-solid fa-star star-filled"></i>
+                <i class="fa-solid fa-star star-filled"></i>
+                <i class="fa-solid fa-star star-filled"></i>
+                <i class="fa-solid fa-star star-filled"></i>
+              </div>
+
+              <p class="review-body-text">
+                Fast delivery, very helpful service.
+              </p>
+            </div>
+          </div>
+
+          <hr class="review-divider" />
+          <div class="review-item">
+            <div class="review-avatar-wrapper">
+              <i class="fa-solid fa-user-circle default-avatar"></i>
+            </div>
+
+            <div class="review-content-block">
+              <div class="review-header-row">
+                <span class="reviewer-name">Tom Harry</span>
+                <span class="rewiew-meta">3 mg</span>
+              </div>
+
+              <div class="review-stars-row">
+                <i class="fa-solid fa-star star-filled"></i>
+                <i class="fa-solid fa-star star-filled"></i>
+                <i class="fa-solid fa-star" class="color: #eab308;"></i>
+                <i class="fa-solid fa-star" class="color: #eab308;"></i>
+                <i class="fa-solid fa-star" class="color: #eab308;"></i>
+              </div>
+
+              <p class="review-body-text">
+                Makes life very convinient. Much love
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!--
+        <div class="workspace-lower-gradient-fill"></div>
+       -->
+    </main>
+  </body>
+</html>
