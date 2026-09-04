@@ -189,6 +189,13 @@
             <div class="controls-group">
               <input class="metric-filter" placeholder="filter" />
               <button class="filter-button">Filter</button>
+              <button
+                type="button"
+                class="filter-button"
+                id="open-add-modal-btn"
+              >
+                Add Meds
+              </button>
             </div>
           </div>
           <div class="table-container">
@@ -315,6 +322,39 @@
       <!--
         <div class="workspace-lower-gradient-fill"></div>
        -->
+
+      <dialog id="add-medal-modal" class="med-modal">
+        <form id="add-med-form" method="dialog">
+          <h3>Add New Medicine</h3>
+          <label>Item Name: <input type="text" name="name" required /></label>
+          <label>SKU: <input type="number" name="sku" required /></label>
+          <label
+            >Category: <input type="text" name="category" required
+          /></label>
+          <label
+            >Current Stock: <input type="number" name="current_stock" required
+          /></label>
+          <label
+            >Reorder Point: <input type="number" name="reorder_point" required
+          /></label>
+          <label
+            >Last Restocked: <input type="date" name="last_restocked" required
+          /></label>
+          <label
+            >Safety Rating
+            <select name="safety-rating required">
+              <option value="Green">Green</option>
+              <option value="Yellow">Yellow</option>
+              <option value="Red">Red</option>
+            </select>
+          </label>
+          <!-- This is for the Cancel and Save Buttons -->
+          <div class="modal-actions">
+            <button type="button" id="close-modal-btn">Cancel</button>
+            <button type="submit" id="save-btn">Save Medicine</button>
+          </div>
+        </form>
+      </dialog>
     </main>
     <script src="../js/dashboard.js"></script>
   </body>
