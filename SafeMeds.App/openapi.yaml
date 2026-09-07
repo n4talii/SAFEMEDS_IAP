@@ -1,0 +1,276 @@
+openapi: 3.0.0
+info:
+  title: MajiApp & SafeMeds Integration API
+  version: 1.0.0
+  description: OpenAPI contract for water purification inventory, health alerts, and vendor locations.
+
+paths:
+  /inventory:
+    get:
+      summary: Retrieve available water-purification inventory products
+      parameters:
+        - name: product
+          in: query
+          required: false
+          schema:
+            type: string
+            example: "chlorine-tablets"
+        - name: available
+          in: query
+          required: false
+          schema:
+            type: boolean
+            example: true
+      responses:
+        '200':
+          description: A list of matching inventory items
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  required:
+                    - id
+                    - productName
+                    - availableQuantity
+                  properties:
+                    id:
+                      type: string
+                      example: "inv-9823"
+                    productName:
+                      type: string
+                      example: "Chlorine Tablets 100mg"
+                    availableQuantity:
+                      type: integer
+                      example: 450
+                    isAvailable:
+                      type: boolean
+                      example: true
+
+  /products/water-purification:
+    get:
+      summary: Retrieve water-purification products sorted by rating
+      parameters:
+        - name: sort
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [rating, price, name]
+            example: "rating"
+      responses:
+        '200':
+          description: Sorted list of water purification products with ratings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  required:
+                    - productId
+                    - name
+                    - averageRating
+                    - reviewCount
+                  properties:
+                    productId:
+                      type: string
+                      example: "prod-401"
+                    name:
+                      type: string
+                      example: "AquaClean Purification Drops"
+                    averageRating:
+                      type: number
+                      format: float
+                      example: 4.8
+                    reviewCount:
+                      type: integer
+                      example: 124
+
+  /health-signals/area-alerts:
+    get:
+      summary: Retrieve active waterborne-illness alerts for a region
+      parameters:
+        - name: region
+          in: query
+          required: true
+          schema:
+            type: string
+            example: "eastern-district"
+        - name: since
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+            example: "2026-08-01"
+      responses:
+        '200':
+          description: List of active health signals and alerts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  required:
+                    - alertId
+                    - region
+                    - illnessType
+                    - severity
+                    - detectedAt
+                  properties:
+                    alertId:
+                      type: string
+                      example: "alt-8812"
+                    region:
+                      type: string
+                      example: "eastern-district"
+                    illnessType:
+                      type: string
+                      example: "Cholera"
+                    severity:
+                      type: string
+                      enum: [low, moderate, high, critical]
+                      example: "high"
+                    detectedAt:
+                      type: string
+                      format: date-time
+                      example: "2026-08-13T10:00:00Z"
+        '400':
+          description: Missing or invalid query parameters
+
+  /health-experts:
+    get:
+      summary: Retrieve nearby health professionals specializing in water purification
+      parameters:
+        - name: type
+          in: query
+          required: false
+          schema:
+            type: string
+            example: "water_purification"
+        - name: status
+          in: query
+          required: false
+          schema:
+            type: string
+            example: "verified"
+        - name: lat
+          in: query
+          required: true
+          schema:
+            type: number
+            format: double
+            example: -1.286389
+        - name: lng
+          in: query
+          required: true
+          schema:
+            type: number
+            format: double
+            example: 36.817223
+        - name: radius
+          in: query
+          required: true
+          schema:
+            type: number
+            example: 10
+      responses:
+        '200':
+          description: A list of nearby health experts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  required:
+                    - expertId
+                    - name
+                    - phone
+                    - status
+                  properties:
+                    expertId:
+                      type: string
+                      example: "exp-302"
+                    name:
+                      type: string
+                      example: "Dr. Jane Wanjiku"
+                    specialty:
+                      type: string
+                      example: "Water Sanitation Specialist"
+                    status:
+                      type: string
+                      example: "verified"
+                    phone:
+                      type: string
+                      example: "+254712345678"
+
+  /vendors:
+    get:
+      summary: Retrieve verified pharmacies within a geographic radius
+      parameters:
+        - name: type
+          in: query
+          required: false
+          schema:
+            type: string
+            example: "pharmacy"
+        - name: status
+          in: query
+          required: false
+          schema:
+            type: string
+            example: "verified"
+        - name: lat
+          in: query
+          required: true
+          schema:
+            type: number
+            format: double
+            example: -1.286389
+        - name: lng
+          in: query
+          required: true
+          schema:
+            type: number
+            format: double
+            example: 36.817223
+        - name: radius
+          in: query
+          required: true
+          schema:
+            type: number
+            example: 5
+      responses:
+        '200':
+          description: List of verified pharmacy vendors
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  required:
+                    - vendorId
+                    - name
+                    - status
+                    - address
+                  properties:
+                    vendorId:
+                      type: string
+                      example: "vnd-109"
+                    name:
+                      type: string
+                      example: "SafeCare Pharmacy"
+                    type:
+                      type: string
+                      example: "pharmacy"
+                    status:
+                      type: string
+                      example: "verified"
+                    address:
+                      type: string
+                      example: "123 Commercial St, Nairobi"
