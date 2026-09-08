@@ -325,28 +325,34 @@
     </main>
 
     <dialog id="add-med-modal" class="med-modal">
-      <form id="add-med-form" method="dialog">
+      <form id="add-med-form">
         <h3>Add New Medicine</h3>
-        <label>Item Name: <input type="text" name="name" required /></label>
-        <label>SKU: <input type="number" name="sku" required /></label>
-        <label>Category: <input type="text" name="category" required /></label>
+        <label>Item Name: <input type="text" name="name" required /></label
+        ><br />
+        <label>SKU: <input type="number" name="sku" required /></label><br />
+        <label>Category: <input type="text" name="category" required /></label
+        ><br />
         <label
-          >Current Stock: <input type="number" name="current_stock" required
-        /></label>
+          >Current Stock:
+          <input type="number" name="current_stock" required /></label
+        ><br />
         <label
-          >Reorder Point: <input type="number" name="reorder_point" required
-        /></label>
+          >Reorder Point:
+          <input type="number" name="reorder_point" required /></label
+        ><br />
         <label
-          >Last Restocked: <input type="date" name="last_restocked" required
-        /></label>
+          >Last Restocked:
+          <input type="date" name="last_restocked" required /></label
+        ><br />
         <label
-          >Safety Rating
-          <select name="safety-rating required">
+          >Safety Rating:
+          <select name="safety_rating" required>
+            <option value="" disabled selected>Select a rating</option>
             <option value="Green">Green</option>
             <option value="Yellow">Yellow</option>
             <option value="Red">Red</option>
-          </select>
-        </label>
+          </select> </label
+        ><br /><br />
         <!-- This is for the Cancel and Save Buttons -->
         <div class="modal-actions">
           <button type="button" id="close-modal-btn">Cancel</button>

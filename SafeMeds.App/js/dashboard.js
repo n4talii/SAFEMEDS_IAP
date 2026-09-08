@@ -11,10 +11,13 @@ document.addEventListener("DOMContentLoaded", () => {
     openBtn.addEventListener("click", () => modal.showModal());
   }
   if (closeBtn && modal) {
-    closeBtn.addEventListener("click", () => modal.closest());
+    closeBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      modal.close();
+    });
   }
   // 3. POST Fetch Cycle: Send new item to Flask and re-order.
-  if (addForm) {
+  if (addForm && modal) {
     addForm.addEventListener("submit", async (e) => {
       e.preventDefault();
 
