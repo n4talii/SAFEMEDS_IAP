@@ -1,14 +1,17 @@
-const mysql = require("mysql2");
+const path = require("path");
+// Point dotenv to the .env file in the parent directory (root)
+require("dotenv").config({ path: path.join(__dirname, "../.env") });
+
 require("dotenv").config();
+const { createClient } = require("@supabase/supabase-js");
 
-const pool = mysql.createPool({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-  port: process.env.DB_PORT,
-  waitForConnections: true,
-  connectionLimit: 10,
-});
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseKey = process.env.SUPABASE_KEY;
 
-module.exports = pool.promise();
+if (!supabaseUrl || !supabaseKey) {
+  console.error("Missing Supabase credentials in .env file!");
+}
+
+const supabase = createClient(supabaseUrl, supabaseKey);
+
+module.exports = supabase;

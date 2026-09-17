@@ -4,8 +4,8 @@
   "description": "",
   "main": "index34.js",
   "scripts": {
-    "start": "node index34.js",
-    "dev": "nodemon index34.js"
+    "start": "node server/index34.js",
+    "dev": "nodemon server/index34.js"
   },
   "keywords": [],
   "author": "",
