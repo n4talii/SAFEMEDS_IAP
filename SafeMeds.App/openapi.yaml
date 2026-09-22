@@ -31,13 +31,13 @@ paths:
                 items:
                   type: object
                   required:
-                    - id
+                    - productId
                     - productName
                     - availableQuantity
                   properties:
-                    id:
-                      type: string
-                      example: "inv-9823"
+                    productId:
+                      type: integer
+                      example: 100102
                     productName:
                       type: string
                       example: "Chlorine Tablets 100mg"
@@ -47,6 +47,16 @@ paths:
                     isAvailable:
                       type: boolean
                       example: true
+        '400':
+          description: Invalid query parameters provided
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Invalid parameter type"              
 
   /products/water-purification:
     get:
@@ -57,7 +67,7 @@ paths:
           required: false
           schema:
             type: string
-            enum: [rating, price, name]
+            enum: [rating, name]
             example: "rating"
       responses:
         '200':
@@ -70,14 +80,14 @@ paths:
                   type: object
                   required:
                     - productId
-                    - name
+                    - productName
                     - averageRating
                     - reviewCount
                   properties:
                     productId:
-                      type: string
-                      example: "prod-401"
-                    name:
+                      type: integer
+                      example: 100102
+                    productName:
                       type: string
                       example: "AquaClean Purification Drops"
                     averageRating:
@@ -87,6 +97,86 @@ paths:
                     reviewCount:
                       type: integer
                       example: 124
+        '400':
+          description: Invalid sort parameter
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Sort parameter must be either 'rating' or 'name' "              
+
+  /medications/{id}/stock:
+    patch:
+      summary: Modify stock quantity field for a specific medication (e.g. Water-Purification Meds)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Unique ID of the medication to update
+          schema:
+            type: integer
+            example: 100102
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: 
+              type: object
+              required:
+                - stockQuantity
+              properties:
+                stockQuantity:
+                  type: integer
+                  minimum: 0
+                  example: 350        
+      responses:
+        '200':
+          description: Stock updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                required: 
+                  - productId
+                  - productName
+                  - stockQuantity
+                  - productCategory
+                properties:
+                  productId:
+                    type: integer
+                    example: 100102
+                  productName:
+                    type: string
+                    example: "Chlorine-tablets"
+                  stockQuantity:
+                    type: integer
+                    example: 350
+                  productCategory: 
+                    type: string
+                    example: "water-purification"
+        '400':
+          description: Invalid payload or missing required fields
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "stockQuantity must be an integer greater than or equal to 0"
+        '404':
+          description: Medication ID not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Medication with ID 100102 not found"
 
   /health-signals/area-alerts:
     get:
