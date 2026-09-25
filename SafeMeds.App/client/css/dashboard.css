@@ -90,7 +90,7 @@
   border-radius: 16px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
   grid-column: span 9;
-  min-height: 330px;
+  min-height: 300px;
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -497,6 +497,7 @@
   justify-content: space-between;
   align-items: center;
   font-weight: bold;
+  padding: 10px;
 }
 .text-management {
   font-family: sans-serif;
