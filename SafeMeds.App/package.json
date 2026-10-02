@@ -6,6 +6,7 @@
   "scripts": {
     "server": "npm run dev --prefix server",
     "client": "npx live-server client",
+    "test": "jest --runInBand",
     "dev": "concurrently \"npm run server\" \"npm run client\""
   },
   "repository": {

@@ -1,0 +1,106 @@
+openapi: 3.0.3
+info:
+  title: Warehouse API
+  version: 1.0.0
+  description: Reference API for managing warehouse inventory.
+paths:
+  /products/{id}:
+    get:
+      summary: Get product details
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Numeric ID of the product
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Details retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - id
+                  - name
+                  - stock
+                properties:
+                  id:
+                    type: integer
+                    example: 101
+                  name:
+                    type: string
+                    example: "Mechanical Keyboard"
+                  stock:
+                    type: integer
+                    example: 50
+        '400':
+          description: Invalid parameters provided
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Invalid ID parameter provided."
+
+    patch:
+      summary: Update product stock/details
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - stock
+              properties:
+                stock:
+                  type: integer
+                  example: 45
+      responses:
+        '200':
+          description: Update Successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Update Successful"
+                  product:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      stock:
+                        type: integer
+        '400':
+          description: Missing required fields
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Missing required fields."
+        '404':
+          description: Item not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Item not found."

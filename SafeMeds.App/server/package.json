@@ -5,7 +5,8 @@
   "main": "index34.js",
   "scripts": {
     "start": "node server/index34.js",
-    "dev": "nodemon server/index34.js"
+    "dev": "nodemon server/index34.js",
+    "test": "jest --runInBand"
   },
   "keywords": [],
   "author": "",
