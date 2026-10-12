@@ -1,20 +1,23 @@
-openapi: 3.0.0
+openapi: 3.0.3
 info:
-  title: MajiApp & SafeMeds Integration API
+  title: SafeMeds Cross-Team API
   version: 1.0.0
-  description: OpenAPI contract for water purification inventory, health alerts, and vendor locations.
-
+  description: Integration endpoints exposed by SafeMeds to MajiApp.
+servers:
+  - url: http://localhost:5000/api
+    description: Local API base URL
 paths:
   /inventory:
     get:
-      summary: Retrieve available water-purification inventory products
+      summary: List water-purification inventory
+      description: Return water-purification products, optionally filtered by product and availability.
       parameters:
         - name: product
           in: query
           required: false
           schema:
             type: string
-            example: "chlorine-tablets"
+            example: chlorine-tablets
         - name: available
           in: query
           required: false
@@ -23,44 +26,23 @@ paths:
             example: true
       responses:
         '200':
-          description: A list of matching inventory items
+          description: Matching inventory items
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  type: object
-                  required:
-                    - productId
-                    - productName
-                    - availableQuantity
-                  properties:
-                    productId:
-                      type: integer
-                      example: 100102
-                    productName:
-                      type: string
-                      example: "Chlorine Tablets 100mg"
-                    availableQuantity:
-                      type: integer
-                      example: 450
-                    isAvailable:
-                      type: boolean
-                      example: true
+                  $ref: '#/components/schemas/InventoryItem'
+              example:
+                - productId: 100102
+                  productName: Chlorine Tablets 100mg
+                  availableQuantity: 450
+                  isAvailable: true
         '400':
-          description: Invalid query parameters provided
-          content:
-            application/json:
-              schema: 
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: "Invalid parameter type"              
-
+          $ref: '#/components/responses/BadRequest'
   /products/water-purification:
     get:
-      summary: Retrieve water-purification products sorted by rating
+      summary: List water-purification products with ratings
       parameters:
         - name: sort
           in: query
@@ -68,54 +50,139 @@ paths:
           schema:
             type: string
             enum: [rating, name]
-            example: "rating"
+            default: rating
+            example: rating
       responses:
         '200':
-          description: Sorted list of water purification products with ratings
+          description: Products and their aggregate review ratings
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  type: object
-                  required:
-                    - productId
-                    - productName
-                    - averageRating
-                    - reviewCount
-                  properties:
-                    productId:
-                      type: integer
-                      example: 100102
-                    productName:
-                      type: string
-                      example: "AquaClean Purification Drops"
-                    averageRating:
-                      type: number
-                      format: float
-                      example: 4.8
-                    reviewCount:
-                      type: integer
-                      example: 124
+                  $ref: '#/components/schemas/RatedProduct'
+              example:
+                - productId: 100102
+                  productName: AquaClean Purification Drops
+                  averageRating: 4.8
+                  reviewCount: 124
         '400':
-          description: Invalid sort parameter
+          $ref: '#/components/responses/BadRequest'
+  /health-signals/area-alerts:
+    get:
+      summary: List waterborne-illness alerts for a region
+      description: Returns anonymized alerts detected on or after the supplied date.
+      parameters:
+        - name: region
+          in: query
+          required: true
+          schema:
+            type: string
+            example: eastern-district
+        - name: since
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+            example: '2026-08-01'
+      responses:
+        '200':
+          description: Matching area alerts
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: "Sort parameter must be either 'rating' or 'name' "              
-
+                type: array
+                items:
+                  $ref: '#/components/schemas/AreaAlert'
+              example:
+                - alertId: alt-8812
+                  region: eastern-district
+                  illnessType: Cholera
+                  severity: high
+                  detectedAt: '2026-08-13T10:00:00Z'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+  /providers:
+    get:
+      summary: Find verified providers near a coordinate
+      description: Use type=health_expert for verified health professionals or type=pharmacy for pharmacies. Radius is measured in kilometres.
+      parameters:
+        - name: type
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: [health_expert, pharmacy]
+            example: pharmacy
+        - name: status
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: [verified]
+            example: verified
+        - name: lat
+          in: query
+          required: true
+          schema:
+            type: number
+            format: double
+            example: -1.286389
+        - name: lng
+          in: query
+          required: true
+          schema:
+            type: number
+            format: double
+            example: 36.817223
+        - name: radius
+          in: query
+          required: true
+          description: Search radius in kilometres.
+          schema:
+            type: number
+            minimum: 0
+            exclusiveMinimum: true
+            example: 5
+      responses:
+        '200':
+          description: Verified providers matching the type and geographic search
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Provider'
+              examples:
+                pharmacy:
+                  summary: Verified pharmacy
+                  value:
+                    - providerId: vnd-109
+                      name: SafeCare Pharmacy
+                      type: pharmacy
+                      status: verified
+                      address: 123 Commercial St, Nairobi
+                healthExpert:
+                  summary: Verified health professional
+                  value:
+                    - providerId: exp-302
+                      name: Dr. Jane Wanjiku
+                      type: health_expert
+                      status: verified
+                      specialty: Water Sanitation Specialist
+                      phone: '+254712345678'
+        '400':
+          $ref: '#/components/responses/BadRequest'
   /medications/{id}/stock:
     patch:
-      summary: Modify stock quantity field for a specific medication (e.g. Water-Purification Meds)
+      summary: Update a medication's available stock quantity
+      description: Partially update stock for a water-purification medication, as agreed with the downstream partner.
       parameters:
         - name: id
           in: path
           required: true
-          description: Unique ID of the medication to update
+          description: Medication identifier.
           schema:
             type: integer
             example: 100102
@@ -123,15 +190,16 @@ paths:
         required: true
         content:
           application/json:
-            schema: 
+            schema:
               type: object
-              required:
-                - stockQuantity
+              required: [stockQuantity]
               properties:
                 stockQuantity:
                   type: integer
                   minimum: 0
-                  example: 350        
+                  example: 350
+            example:
+              stockQuantity: 350
       responses:
         '200':
           description: Stock updated successfully
@@ -139,228 +207,139 @@ paths:
             application/json:
               schema:
                 type: object
-                required: 
-                  - productId
-                  - productName
-                  - stockQuantity
-                  - productCategory
+                required: [productId, productName, stockQuantity, productCategory]
                 properties:
                   productId:
                     type: integer
                     example: 100102
                   productName:
                     type: string
-                    example: "Chlorine-tablets"
+                    example: Chlorine Tablets 100mg
                   stockQuantity:
                     type: integer
                     example: 350
-                  productCategory: 
+                  productCategory:
                     type: string
-                    example: "water-purification"
+                    example: water-purification
+              example:
+                productId: 100102
+                productName: Chlorine Tablets 100mg
+                stockQuantity: 350
+                productCategory: water-purification
         '400':
-          description: Invalid payload or missing required fields
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: "stockQuantity must be an integer greater than or equal to 0"
+          $ref: '#/components/responses/BadRequest'
         '404':
           description: Medication ID not found
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: "Medication with ID 100102 not found"
-
-  /health-signals/area-alerts:
-    get:
-      summary: Retrieve active waterborne-illness alerts for a region
-      parameters:
-        - name: region
-          in: query
-          required: true
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Medication with ID 100102 not found.
+components:
+  schemas:
+    InventoryItem:
+      type: object
+      required: [productId, productName, availableQuantity, isAvailable]
+      properties:
+        productId:
+          type: integer
+          example: 100102
+        productName:
+          type: string
+          example: Chlorine Tablets 100mg
+        availableQuantity:
+          type: integer
+          minimum: 0
+          example: 450
+        isAvailable:
+          type: boolean
+          example: true
+    RatedProduct:
+      type: object
+      required: [productId, productName, averageRating, reviewCount]
+      properties:
+        productId:
+          type: integer
+          example: 100102
+        productName:
+          type: string
+          example: AquaClean Purification Drops
+        averageRating:
+          type: number
+          format: float
+          minimum: 0
+          maximum: 5
+          example: 4.8
+        reviewCount:
+          type: integer
+          minimum: 0
+          example: 124
+    AreaAlert:
+      type: object
+      required: [alertId, region, illnessType, severity, detectedAt]
+      properties:
+        alertId:
+          type: string
+          example: alt-8812
+        region:
+          type: string
+          example: eastern-district
+        illnessType:
+          type: string
+          example: Cholera
+        severity:
+          type: string
+          enum: [low, moderate, high, critical]
+          example: high
+        detectedAt:
+          type: string
+          format: date-time
+          example: '2026-08-13T10:00:00Z'
+    Provider:
+      type: object
+      required: [providerId, name, type, status]
+      properties:
+        providerId:
+          type: string
+          description: Stable identifier for either a pharmacy or health expert.
+          example: vnd-109
+        name:
+          type: string
+          example: SafeCare Pharmacy
+        type:
+          type: string
+          enum: [health_expert, pharmacy]
+          example: pharmacy
+        status:
+          type: string
+          enum: [verified]
+          example: verified
+        specialty:
+          type: string
+          description: Present for health experts.
+          example: Water Sanitation Specialist
+        phone:
+          type: string
+          description: Contact number when available.
+          example: '+254712345678'
+        address:
+          type: string
+          description: Present for pharmacies.
+          example: 123 Commercial St, Nairobi
+    Error:
+      type: object
+      required: [message]
+      properties:
+        message:
+          type: string
+          example: Missing or invalid query parameter.
+  responses:
+    BadRequest:
+      description: Missing or invalid query parameters
+      content:
+        application/json:
           schema:
-            type: string
-            example: "eastern-district"
-        - name: since
-          in: query
-          required: true
-          schema:
-            type: string
-            format: date
-            example: "2026-08-01"
-      responses:
-        '200':
-          description: List of active health signals and alerts
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: object
-                  required:
-                    - alertId
-                    - region
-                    - illnessType
-                    - severity
-                    - detectedAt
-                  properties:
-                    alertId:
-                      type: string
-                      example: "alt-8812"
-                    region:
-                      type: string
-                      example: "eastern-district"
-                    illnessType:
-                      type: string
-                      example: "Cholera"
-                    severity:
-                      type: string
-                      enum: [low, moderate, high, critical]
-                      example: "high"
-                    detectedAt:
-                      type: string
-                      format: date-time
-                      example: "2026-08-13T10:00:00Z"
-        '400':
-          description: Missing or invalid query parameters
-
-  /health-experts:
-    get:
-      summary: Retrieve nearby health professionals specializing in water purification
-      parameters:
-        - name: type
-          in: query
-          required: false
-          schema:
-            type: string
-            example: "water_purification"
-        - name: status
-          in: query
-          required: false
-          schema:
-            type: string
-            example: "verified"
-        - name: lat
-          in: query
-          required: true
-          schema:
-            type: number
-            format: double
-            example: -1.286389
-        - name: lng
-          in: query
-          required: true
-          schema:
-            type: number
-            format: double
-            example: 36.817223
-        - name: radius
-          in: query
-          required: true
-          schema:
-            type: number
-            example: 10
-      responses:
-        '200':
-          description: A list of nearby health experts
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: object
-                  required:
-                    - expertId
-                    - name
-                    - phone
-                    - status
-                  properties:
-                    expertId:
-                      type: string
-                      example: "exp-302"
-                    name:
-                      type: string
-                      example: "Dr. Jane Wanjiku"
-                    specialty:
-                      type: string
-                      example: "Water Sanitation Specialist"
-                    status:
-                      type: string
-                      example: "verified"
-                    phone:
-                      type: string
-                      example: "+254712345678"
-
-  /vendors:
-    get:
-      summary: Retrieve verified pharmacies within a geographic radius
-      parameters:
-        - name: type
-          in: query
-          required: false
-          schema:
-            type: string
-            example: "pharmacy"
-        - name: status
-          in: query
-          required: false
-          schema:
-            type: string
-            example: "verified"
-        - name: lat
-          in: query
-          required: true
-          schema:
-            type: number
-            format: double
-            example: -1.286389
-        - name: lng
-          in: query
-          required: true
-          schema:
-            type: number
-            format: double
-            example: 36.817223
-        - name: radius
-          in: query
-          required: true
-          schema:
-            type: number
-            example: 5
-      responses:
-        '200':
-          description: List of verified pharmacy vendors
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: object
-                  required:
-                    - vendorId
-                    - name
-                    - status
-                    - address
-                  properties:
-                    vendorId:
-                      type: string
-                      example: "vnd-109"
-                    name:
-                      type: string
-                      example: "SafeCare Pharmacy"
-                    type:
-                      type: string
-                      example: "pharmacy"
-                    status:
-                      type: string
-                      example: "verified"
-                    address:
-                      type: string
-                      example: "123 Commercial St, Nairobi"
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Missing or invalid query parameter.
