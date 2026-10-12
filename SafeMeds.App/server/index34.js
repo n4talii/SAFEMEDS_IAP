@@ -217,7 +217,7 @@ app.use((err, req, res, next) => {
 });
 
 if (process.env.NODE_ENV !== "test") {
-  app.listen(PORT, () => {
+  app.listen(PORT, "0.0.0.0", () => {
     console.log(`SafeMeds API listening at http://localhost:${PORT}`);
   });
 }

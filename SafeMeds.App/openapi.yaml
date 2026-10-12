@@ -4,8 +4,8 @@ info:
   version: 1.0.0
   description: Integration endpoints exposed by SafeMeds to MajiApp.
 servers:
-  - url: http://localhost:5000/api
-    description: Local API base URL
+  - url: /api
+    description: API base URL on the current host
 paths:
   /inventory:
     get:

@@ -29,6 +29,8 @@ curl.exe --fail-with-body "http://localhost:5000/api/inventory?product=chlorine-
 
 The server uses bundled in-memory demonstration records, so no database credentials or `.env` file are needed. These records are for the lab demo and are not live MySQL data. A stock PATCH changes the in-memory quantity until the server restarts.
 
+To let another team call a hosted copy, replace `http://localhost:5000` in the request examples with the public service URL. The browsable docs use the current host automatically.
+
 ## Endpoints
 
 ### Water-purification inventory
