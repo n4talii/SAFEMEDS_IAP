@@ -4,7 +4,7 @@
   "description": "",
   "main": "index34.js",
   "scripts": {
-    "server": "npm run dev --prefix server",
+    "server": "node server/index34.js",
     "client": "npx live-server client",
     "test": "jest --runInBand",
     "dev": "concurrently \"npm run server\" \"npm run client\""
