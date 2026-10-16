@@ -1,5 +1,4 @@
 node_modules/
-/work/npm-cache/
 .idea/
 firebase-debug.log
 .env

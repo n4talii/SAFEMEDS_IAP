@@ -22,9 +22,3 @@ NO DEVIATIONS.
 > > > o 200 – For a Successful update of the stock e.g. Stock update from 200 to 300  
 > > > o 400 – For Invalid Payload or missing required fields from the client side.  
 > > > o 404 – Medication to be updated not found. E.g. Wrong Medication ID entered.
-
-## Additional deviations identified during the Week 8 review
-
-- The Week 6 PATCH remains the team's one non-GET endpoint. Natalie confirmed that this endpoint was discussed with Jeremy from Group 4 and is the PATCH to submit.
-- The original Week 6 implementation used `PATCH /api/inventory/{id}` with a `stock` field and a different response shape. The Week 8 local demo now exposes the agreed `PATCH /api/medications/{id}/stock` contract with `stockQuantity`, the documented success response, and `message` errors.
-- The local demo uses in-memory records so a clean clone can run without secrets. It does not persist changes or read the supplied MySQL schema; stock resets when the server restarts. Connecting this contract to the MySQL database remains a data-integration deviation.
