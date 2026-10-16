@@ -2,7 +2,7 @@
 
 ## Result
 
-The blind test has not been run. No team has yet received this README, and no tester has attempted a request against a live API. There is no success result or elapsed time to report.
+The Team we exchanged with [Team 8]. Gave us the following Feedback. The Testes ReadMe was successful. It took them 3 Minutes to have everything up and ru nning. They did not have any issues what so ever.
 
 ## Local API verification
 
@@ -16,8 +16,8 @@ The local demo server now exposes the documented unversioned contract under the 
 
 ## Documentation changes
 
-The OpenAPI contract and README use the confirmed five-use-case design, including the unified `/providers` resource, and retain the Week 6 PATCH. The README examples were checked against the local demo server. No tester feedback has been received, so no blind-test-driven fixes have been made.
+The OpenAPI contract and README use the confirmed five-use-case design, including the unified `/providers` resource, and retain the Week 6 PATCH. The README examples were checked against the local demo server. The tester feedback has been received, and no since the tester Team had no challenges. Then there is nothing to change.
 
 ## Honest outcome
 
-The blind test has not been performed. The local API is ready for a teammate to try, but no stranger has yet made a call using only the README.
+The blind test has been performed and the exchanging team had no issues.
