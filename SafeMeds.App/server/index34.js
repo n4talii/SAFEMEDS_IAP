@@ -68,7 +68,10 @@ const providers = [
 function isDate(value) {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
   const parsed = new Date(`${value}T00:00:00Z`);
-  return !Number.isNaN(parsed.valueOf()) && parsed.toISOString().slice(0, 10) === value;
+  return (
+    !Number.isNaN(parsed.valueOf()) &&
+    parsed.toISOString().slice(0, 10) === value
+  );
 }
 
 function distanceKm(lat1, lng1, lat2, lng2) {
@@ -106,19 +109,28 @@ app.get("/api/inventory", (req, res) => {
   if (product) {
     const normalizedProduct = product.toLowerCase().replace(/[_\s]/g, "-");
     results = results.filter((item) =>
-      item.productName.toLowerCase().replace(/[_\s]/g, "-").includes(normalizedProduct),
+      item.productName
+        .toLowerCase()
+        .replace(/[_\s]/g, "-")
+        .includes(normalizedProduct),
     );
   }
   if (available !== undefined) {
-    results = results.filter((item) => item.isAvailable === (available === "true"));
+    results = results.filter(
+      (item) => item.isAvailable === (available === "true"),
+    );
   }
 
-  res.json(results.map(({ productId, productName, availableQuantity, isAvailable }) => ({
-    productId,
-    productName,
-    availableQuantity,
-    isAvailable,
-  })));
+  res.json(
+    results.map(
+      ({ productId, productName, availableQuantity, isAvailable }) => ({
+        productId,
+        productName,
+        availableQuantity,
+        isAvailable,
+      }),
+    ),
+  );
 });
 
 app.get("/api/products/water-purification", (req, res) => {
@@ -138,11 +150,16 @@ app.get("/api/products/water-purification", (req, res) => {
 app.get("/api/health-signals/area-alerts", (req, res) => {
   const { region, since } = req.query;
   if (!region || !since || !isDate(since)) {
-    return res.status(400).json(invalid("region and a valid since date (YYYY-MM-DD) are required."));
+    return res
+      .status(400)
+      .json(
+        invalid("region and a valid since date (YYYY-MM-DD) are required."),
+      );
   }
 
   const results = areaAlerts.filter(
-    (alert) => alert.region === region && alert.detectedAt.slice(0, 10) >= since,
+    (alert) =>
+      alert.region === region && alert.detectedAt.slice(0, 10) >= since,
   );
   res.json(results);
 });
@@ -168,12 +185,21 @@ app.get("/api/providers", (req, res) => {
     !Number.isFinite(radiusKm) ||
     radiusKm <= 0
   ) {
-    return res.status(400).json(invalid("type, status, valid lat/lng coordinates, and a positive radius are required."));
+    return res
+      .status(400)
+      .json(
+        invalid(
+          "type, status, valid lat/lng coordinates, and a positive radius are required.",
+        ),
+      );
   }
 
   const results = providers
     .filter((provider) => provider.type === type && provider.status === status)
-    .filter((provider) => distanceKm(latitude, longitude, provider.lat, provider.lng) <= radiusKm)
+    .filter(
+      (provider) =>
+        distanceKm(latitude, longitude, provider.lat, provider.lng) <= radiusKm,
+    )
     .map(({ lat: providerLat, lng: providerLng, ...provider }) => provider);
   res.json(results);
 });
@@ -186,7 +212,11 @@ app.patch("/api/medications/:id/stock", (req, res) => {
 
   const { stockQuantity } = req.body || {};
   if (!Number.isInteger(stockQuantity) || stockQuantity < 0) {
-    return res.status(400).json(invalid("stockQuantity must be an integer greater than or equal to 0."));
+    return res
+      .status(400)
+      .json(
+        invalid("stockQuantity must be an integer greater than or equal to 0."),
+      );
   }
 
   const item = inventory.find((candidate) => candidate.productId === id);
@@ -210,7 +240,9 @@ app.use((req, res) => {
 
 app.use((err, req, res, next) => {
   if (err instanceof SyntaxError && err.status === 400 && "body" in err) {
-    return res.status(400).json(invalid("Request body must contain valid JSON."));
+    return res
+      .status(400)
+      .json(invalid("Request body must contain valid JSON."));
   }
   console.error(err);
   res.status(500).json(invalid("Internal server error."));
