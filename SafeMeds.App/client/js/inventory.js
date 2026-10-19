@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:5000/api/inventory";
+const API_URL = "http://localhost:8080/api/inventory";
 
 //GET fetch and display inventory in the table container
 async function loadInventory() {
@@ -7,7 +7,7 @@ async function loadInventory() {
     const data = await res.json();
 
     if (!res.ok || !Array.isArray(data)) {
-      console.err("Server returned non-array error:", data);
+      console.error("Server returned non-array error:", data);
       return;
     }
 
@@ -45,7 +45,7 @@ async function loadInventory() {
       container.appendChild(row);
     });
   } catch (err) {
-    console.error("Error loading inventory:", error);
+    console.error("Error loading inventory:", err);
   }
 }
 

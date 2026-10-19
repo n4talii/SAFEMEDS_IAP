@@ -15,3 +15,7 @@ app.use(express.json());
 
 // Mount API routes
 app.use("/api/inventory", inventoryRoutes);
+
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`Server listening on http://localhost:${PORT}`);
+});

@@ -2,7 +2,6 @@ const path = require("path");
 // Point dotenv to the .env file in the parent directory (root)
 require("dotenv").config({ path: path.join(__dirname, "../.env") });
 
-require("dotenv").config();
 const { createClient } = require("@supabase/supabase-js");
 
 const supabaseUrl = process.env.SUPABASE_URL;

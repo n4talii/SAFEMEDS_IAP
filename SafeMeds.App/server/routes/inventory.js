@@ -1,7 +1,6 @@
 const express = require("express");
 const router = express.Router();
 const supabase = require("../db");
-const { ascending } = require("firebase/firestore/pipelines");
 
 //GET /api/inventory - Retrieve all items from Superbase
 router.get("/", async (req, res) => {
