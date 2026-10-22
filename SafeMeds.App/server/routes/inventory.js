@@ -123,4 +123,46 @@ router.post("/", async (req, res) => {
   }
 });
 
+router.put("/:id", async (req, res) => {
+  const { id } = req.params;
+  const {
+    item_name,
+    sku,
+    category,
+    current_stock,
+    reorder_point,
+    last_restocked,
+    safety_rating,
+  } = req.body;
+
+  if (isNaN(id)) {
+    return res.status(400).json({ error: "Invalid Id Parameter" });
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from("inventory")
+      .update({
+        item_name,
+        sku: Number(sku),
+        category,
+        current_stock: Number(current_stock),
+        reorder_point: Number(reorder_point),
+        last_restocked,
+        safety_rating,
+      })
+      .eq("id", Number(id))
+      .select();
+
+    if (error || !data || data.length === 0) {
+      return res.status(404).json({ error: "Item not found or update failed" });
+    }
+
+    res.status(200).json(data[0]);
+  } catch (err) {
+    console.error("Supabase update error:", err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
 module.exports = router;

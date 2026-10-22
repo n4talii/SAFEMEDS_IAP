@@ -264,57 +264,11 @@
         <!------------------------------------ Widget 7 ----------------------------->
         <div class="metric-reviews">
           <div class="review">
-            <span class="rating">Customer Reviews and Ratings</span>
-          </div>
-          <div class="review-item">
-            <div class="review-avatar-wrapper">
-              <i class="fa-solid fa-user-circle default-avatar"></i>
-            </div>
-
-            <div class="review-content-block">
-              <div class="review-header-row">
-                <span class="reviewer-name">Noel Maids</span>
-                <span class="rewiew-meta">12 mg</span>
-              </div>
-
-              <div class="review-stars-row">
-                <i class="fa-solid fa-star star-filled"></i>
-                <i class="fa-solid fa-star star-filled"></i>
-                <i class="fa-solid fa-star star-filled"></i>
-                <i class="fa-solid fa-star star-filled"></i>
-                <i class="fa-solid fa-star star-filled"></i>
-              </div>
-
-              <p class="review-body-text">
-                Fast delivery, very helpful service.
-              </p>
-            </div>
+            <span class="rating">Customer Reviews</span>
           </div>
 
-          <hr class="review-divider" />
-          <div class="review-item">
-            <div class="review-avatar-wrapper">
-              <i class="fa-solid fa-user-circle default-avatar"></i>
-            </div>
-
-            <div class="review-content-block">
-              <div class="review-header-row">
-                <span class="reviewer-name">Tom Harry</span>
-                <span class="rewiew-meta">3 mg</span>
-              </div>
-
-              <div class="review-stars-row">
-                <i class="fa-solid fa-star star-filled"></i>
-                <i class="fa-solid fa-star star-filled"></i>
-                <i class="fa-solid fa-star" class="color: #eab308;"></i>
-                <i class="fa-solid fa-star" class="color: #eab308;"></i>
-                <i class="fa-solid fa-star" class="color: #eab308;"></i>
-              </div>
-
-              <p class="review-body-text">
-                Makes life very convinient. Much love
-              </p>
-            </div>
+          <div id="reviews-list-container">
+            <p class="loading-state">Loading reviews...</p>
           </div>
         </div>
       </div>
@@ -326,6 +280,7 @@
 
     <dialog id="add-med-modal" class="med-modal">
       <form id="add-med-form">
+        <input type="hidden" id="med-id" value="" />
         <h3>Add New Medicine</h3>
         <label
           >Item Name:
@@ -383,5 +338,6 @@
       </form>
     </dialog>
     <script src="../js/inventory.js"></script>
+    <script src="../js/reviews-widget.js"></script>
   </body>
 </html>

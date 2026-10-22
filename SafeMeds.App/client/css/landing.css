@@ -43,7 +43,6 @@
   background-color: transparent;
   color: #ffffff;
   border: 2px solid #ffffff;
-  
 }
 
 /* resize the logo */
@@ -118,7 +117,7 @@
   margin: 0 auto;
   border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
   height: 450px;
 }
 
@@ -155,7 +154,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   z-index: 10;
   width: 200px;
 }
@@ -209,11 +208,11 @@
   border: 3px solid #ffffff;
   border-radius: 50%;
   display: block;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.4);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
 }
 
 .user-pin-marker::after {
-  content: '';
+  content: "";
   position: absolute;
   top: -3px;
   left: -3px;
@@ -238,16 +237,22 @@
   border: 3px solid #ffffff;
   border-radius: 50%;
   display: block;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.4);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
   transition: transform 0.2s ease;
 }
 
-.pin-marker.green  { background: #22c55e; }
-.pin-marker.yellow { background: #eab308; }
-.pin-marker.red    { background: #ef4444; }
+.pin-marker.green {
+  background: #22c55e;
+}
+.pin-marker.yellow {
+  background: #eab308;
+}
+.pin-marker.red {
+  background: #ef4444;
+}
 
 .pin-marker::after {
-  content: '';
+  content: "";
   position: absolute;
   top: -3px;
   left: -3px;
@@ -257,11 +262,19 @@
   animation: pin-pulse 2s infinite ease-out;
 }
 
-.pin-marker.green::after  { border: 3px solid #22c55e; }
-.pin-marker.yellow::after { border: 3px solid #eab308; }
-.pin-marker.red::after    { border: 3px solid #ef4444; }
+.pin-marker.green::after {
+  border: 3px solid #22c55e;
+}
+.pin-marker.yellow::after {
+  border: 3px solid #eab308;
+}
+.pin-marker.red::after {
+  border: 3px solid #ef4444;
+}
 
-.map-pin:hover .pin-marker { transform: scale(1.3); }
+.map-pin:hover .pin-marker {
+  transform: scale(1.3);
+}
 
 /* Tooltip */
 .pin-tooltip {
@@ -274,10 +287,12 @@
   padding: 10px 14px;
   border-radius: 10px;
   width: 180px;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.3s ease, transform 0.3s ease;
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s ease;
   pointer-events: none;
 }
 
@@ -308,7 +323,7 @@
   background: #ffffff;
   border-radius: 12px;
   padding: 12px 16px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   z-index: 10;
   min-width: 160px;
 }
@@ -333,9 +348,18 @@
   margin-bottom: 4px;
 }
 
-.safe-green  { flex: 1; background: #22c55e; }
-.safe-yellow { flex: 1; background: #eab308; }
-.safe-red    { flex: 1; background: #ef4444; }
+.safe-green {
+  flex: 1;
+  background: #22c55e;
+}
+.safe-yellow {
+  flex: 1;
+  background: #eab308;
+}
+.safe-red {
+  flex: 1;
+  background: #ef4444;
+}
 
 .safe-search-labels {
   display: flex;
@@ -384,8 +408,14 @@
 }
 
 @keyframes pin-pulse {
-  0%   { transform: scale(0.5); opacity: 1; }
-  100% { transform: scale(2);   opacity: 0; }
+  0% {
+    transform: scale(0.5);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(2);
+    opacity: 0;
+  }
 }
 
 /* Pharmacy Cards Section */
@@ -408,7 +438,7 @@
   background: #ffffff;
   border-radius: 16px;
   padding: 20px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   border: 1px solid #f0f0f0;
   display: flex;
   flex-direction: column;
@@ -418,7 +448,7 @@
 
 .pharmacy-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
 }
 
 .card-header {
@@ -482,12 +512,18 @@
   font-weight: 700;
   font-size: 1rem;
   color: #ffffff;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
-.green-score  { background: #22c55e; }
-.yellow-score { background: #eab308; }
-.red-score    { background: #ef4444; }
+.green-score {
+  background: #22c55e;
+}
+.yellow-score {
+  background: #eab308;
+}
+.red-score {
+  background: #ef4444;
+}
 
 .card-availability {
   font-size: 0.8rem;
@@ -521,7 +557,7 @@
 }
 
 .footer-brand {
-  font-size: 1.3rem;
+  font-size: 1.1rem;
   font-weight: 700;
   margin-bottom: 4px;
 }
@@ -533,7 +569,7 @@
 }
 
 .footer-col a {
-  color: rgba(255,255,255,0.8);
+  color: rgba(255, 255, 255, 0.8);
   text-decoration: none;
   font-size: 0.85rem;
   transition: opacity 0.2s ease;
@@ -551,9 +587,9 @@
   max-width: 900px;
   margin: 30px auto 0;
   padding-top: 15px;
-  border-top: 1px solid rgba(255,255,255,0.2);
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
   font-size: 0.8rem;
-  color: rgba(255,255,255,0.7);
+  color: rgba(255, 255, 255, 0.7);
 }
 
 .footer-socials {
@@ -562,23 +598,14 @@
   font-size: 1.2rem;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 @keyframes drift {
-  0%,  100% { transform: translateY(0px)   rotate(var(--r)); }
-  50%        { transform: translateY(-18px) rotate(var(--r)); }
+  0%,
+  100% {
+    transform: translateY(0px) rotate(var(--r));
+  }
+  50% {
+    transform: translateY(-18px) rotate(var(--r));
+  }
 }
 
 /* 2. Base pill shape — shared by all four pills */
@@ -591,31 +618,39 @@
 
 /* 3. Individual pill positions, sizes, and timing */
 .hero-pill:nth-child(1) {
-  width: 180px; height: 66px;
-  top: 14%; left: 6%;
+  width: 180px;
+  height: 66px;
+  top: 14%;
+  left: 6%;
   --r: -28deg;
   animation: drift 7s ease-in-out infinite;
 }
 .hero-pill:nth-child(2) {
-  width: 100px; height: 40px;
-  bottom: 22%; right: 7%;
+  width: 100px;
+  height: 40px;
+  bottom: 22%;
+  right: 7%;
   --r: 22deg;
   animation: drift 9s ease-in-out infinite 1.2s;
 }
 .hero-pill:nth-child(3) {
-  width: 60px; height: 24px;
-  top: 55%; left: 11%;
+  width: 60px;
+  height: 24px;
+  top: 55%;
+  left: 11%;
   --r: 10deg;
   animation: drift 8s ease-in-out infinite 0.5s;
 }
 .hero-pill:nth-child(4) {
-  width: 130px; height: 50px;
-  top: 20%; right: 12%;
+  width: 130px;
+  height: 50px;
+  top: 20%;
+  right: 12%;
   --r: -14deg;
   animation: drift 10s ease-in-out infinite 2s;
 }
 
 .your-section {
-  position: relative;  /* so absolute pills position against the section */
-  overflow: hidden;    /* clips pills that drift near the edges */
+  position: relative; /* so absolute pills position against the section */
+  overflow: hidden; /* clips pills that drift near the edges */
 }
