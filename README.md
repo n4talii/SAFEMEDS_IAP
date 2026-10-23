@@ -40,3 +40,7 @@ curl.exe --fail-with-body -X PATCH -H "Content-Type: application/json" -d '{"sto
 ## Demo data
 
 The hosted lab service uses demonstration records and does not connect to the supplied MySQL database. Stock updates are held in memory and may reset when the service restarts. A free Render instance may take longer to respond after inactivity.
+
+## Blind test
+
+A teammate followed this README from a clean clone and received a working response in two minutes, without database setup. They reported that all example requests matched the documented responses. See the [Week 8 blind test report](SafeMeds.App/BLIND_TEST_REPORT.md).
