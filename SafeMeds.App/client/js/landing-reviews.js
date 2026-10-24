@@ -17,11 +17,11 @@ document.addEventListener("DOMContentLoaded", () => {
         const res = await fetch(INVENTORY_API_URL);
         if (res.ok) {
           const products = await res.json();
-          productSelect.innerHTML =
-            '<option value="">Select a Medication...</option>';
+          let optionsHTML = '<option value="">Select a Medication</option>';
           products.forEach((prod) => {
-            productSelect.innerHTML += `<option value="${prod.id}">${prod.item_name} (${prod.category})</option>`;
+            optionsHTML += `<option value="${prod.id}">${prod.item_name} (${prod.category})</option>`;
           });
+          productSelect.innerHTML = optionsHTML;
         }
       } catch (err) {
         console.error("Failed to load medicines into dropdown:", err);

@@ -1,16 +1,24 @@
-const DASHBOARD_REVIEWS_URL = "http://127.0.0.1:8080/api/REVIEWS";
+const DASHBOARD_REVIEWS_URL = "http://127.0.0.1:8080/api/reviews";
 
 async function loadDashboardReviews() {
-  const container = document.getElementById("reviews-widget-container");
+  const container = document.getElementById("reviews-list-container");
   if (!container) return;
 
+  container.innerHTML = '<p class="empty-state">Loading reviews...</p>';
+
   try {
-    const res = await fetch("DASHBOARD_REVIEWS_URL");
+    const res = await fetch(DASHBOARD_REVIEWS_URL);
+
+    if (!res.ok) {
+      container.innerHTML =
+        '<p class="empty-state">Unable to load reviews.</p>';
+      return;
+    }
+
     const reviews = await res.json();
 
-    if (!res.ok || !Array.isArray(reviews)) {
-      container.innerhtml =
-        '<p class="empty-state">Unable to load reviews.</p>';
+    if (!Array.isArray(reviews)) {
+      container.innerHTML = '<p class="empty-state">Invalid data received.<p>';
       return;
     }
 
@@ -28,7 +36,7 @@ async function loadDashboardReviews() {
 
       let starsHTML = "";
       for (let i = 1; i <= 5; i++) {
-        if (i <= res.rating) {
+        if (i <= rev.rating) {
           starsHTML += '<i class="fa-solid fa-star star-filled"></i>';
         } else {
           starsHTML += '<i class="fa-regular fa-star"></i>';

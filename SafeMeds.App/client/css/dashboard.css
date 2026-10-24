@@ -114,8 +114,7 @@
   grid-column: span 3;
   height: max-content;
 }
-.metric-notifications,
-.metric-reviews {
+.metric-notifications {
   height: auto;
   background-color: #ffffff;
   border-radius: 16px;
@@ -756,6 +755,23 @@
 }
 
 /* ------------------------------------------------ Box 7 styling -------------------------------------------------- */
+.metric reviews,
+reviews-list-container {
+  max-height: 280px !important;
+  overflow-y: auto !important;
+  padding-right: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background-color: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  box-sizing: border-box;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+  will-change: transform;
+}
 .review {
   display: flex;
   align-items: center;
@@ -765,62 +781,17 @@
   font-family: sans-serif;
   font-weight: bold;
 }
-.review-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  padding: 10px 14px;
-  background-color: #ffffff;
+.reviews-list-container::-webkit-scrollbar {
+  width: 6px;
 }
-.review-avatar-wrapper {
-  flex-shrink: 0;
+.reviews-list-container::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 4px;
 }
-.default-avatar {
-  font-size: 2rem;
-  color: #94a3b8;
+.reviews-list-container::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
 }
-.review-content-block {
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-}
-.review-header-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-}
-.reviewer-name {
-  font-family: "Inter", system-ui, sans-serif;
-  font-size: 0.95rem;
-  font-weight: 700;
-  color: #0f172a;
-}
-.rewiew-meta {
-  font-family: "Inter", system-ui, sans-serif;
-  font-size: 0.8rem;
-  color: #64748b;
-}
-.review-stars-row {
-  display: flex;
-  gap: 2px;
-  margin-top: 2dvh;
-  margin-bottom: 8px;
-}
-.stars-filled {
-  font-size: 0.85rem;
-  color: #f59e0b;
-}
-.review-body-text {
-  font-family: "Inter", system-ui, sans-serif;
-  font-size: 0.9rem;
-  font-weight: 500;
-  line-height: 1.4;
-  color: #0f172a;
-  margin: 0;
-}
-.review-divider {
-  border: none;
-  border-top: 1px solid #f1f5f9;
-  margin: 0 14px;
+.reviews-list-container::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
 }
