@@ -89,9 +89,9 @@ router.post("/", async (req, res) => {
       .insert([
         {
           product_id: Number(product_id),
-          customer_name,
+          customer_name: customer_name,
           rating: Number(rating),
-          review_text,
+          review_text: review_text,
         },
       ])
       .select();

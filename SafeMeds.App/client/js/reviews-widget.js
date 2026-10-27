@@ -4,6 +4,8 @@ async function loadDashboardReviews() {
   const container = document.getElementById("reviews-list-container");
   if (!container) return;
 
+  container.innerHTML = '<p class="empty-state">Loading reviews...</p>';
+
   try {
     const response = await fetch(DASHBOARD_REVIEWS_URL);
     const reviews = await response.json();
