@@ -772,6 +772,12 @@ body {
         background: #0b5394;
         color: #ffffff;
       }
+      .cta-link {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+      }
       .btn-primary:hover {
         opacity: 0.92;
       }
@@ -842,4 +848,3 @@ body {
           transition: none;
         }
       }
-

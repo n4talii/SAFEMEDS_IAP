@@ -12,56 +12,71 @@
     />
   </head>
   <body>
+    <header class="navbar-container dashboard-navbar">
+      <span class="navbar-logo dashboard-brand">
+        <img src="../images/MediFindLogo.png" alt="" class="nav-logo-img" />
+        <span>SafeMeds</span>
+      </span>
+      <nav class="navbar-links" aria-label="Main navigation">
+        <a href="landing.html">Home</a>
+        <a href="landing.html#map">Find Pharmacies</a>
+        <a href="gooddoctor.html">Good Doctor</a>
+        <a href="about.html">About</a>
+        <a href="dashboard.html" aria-current="page">Dashboard</a>
+      </nav>
+    </header>
     <div class="sidebar">
-      <h1 class="sidebar-buttons">
-        <a href="landing.html" class="sidebar-close-btn">
-          <i class="fa-solid"></i>
-          <img src="../images/MediFindLogo.png" alt="MediFind Logo" />
-          <span>SafeMeds</span>
-        </a>
-      </h1>
-      <a href="#" class="sidebar-buttons">
+      <div class="sidebar-brand sidebar-buttons">
+        <span>Dashboard</span>
+      </div>
+      <a href="#dashboard-overview" class="sidebar-buttons" aria-current="location">
         <i class="fa-solid fa-table-cells-large"></i>
         <span>Dashboard Overview</span>
       </a>
-      <a class="sidebar-buttons">
+      <a href="#inventory-management" class="sidebar-buttons">
         <i class="fa-solid fa-box-archive"></i>
         <span>Inventory Management</span>
       </a>
-      <a class="sidebar-buttons">
+      <a href="#orders-fulfilment" class="sidebar-buttons">
         <i class="fa-solid fa-clipboard-list"></i>
         <span>Orders & Fulfilment</span>
       </a>
-      <a class="sidebar-buttons">
+      <a href="#sales-reporting" class="sidebar-buttons">
         <i class="fa-solid fa-chart-line"></i>
         <span>Sales & Reporting</span>
       </a>
-      <a class="sidebar-buttons">
+      <a href="#customer-feedback" class="sidebar-buttons">
         <i class="fa-solid fa-comment-dots"></i>
         <span>Customer Feedback</span>
       </a>
-      <a class="sidebar-buttons">
+      <button type="button" class="sidebar-buttons dashboard-dialog-trigger" data-dialog="staff-modal">
         <i class="fa-solid fa-user-group"></i>
         <span>Staff Management</span>
-      </a>
-      <a class="sidebar-buttons">
-        <i class="fa-solid fa-gear"></i>
-        <span>Settings</span>
-      </a>
+      </button>
     </div>
 
-    <div class="dashboard-header">
+    <div class="dashboard-header" id="dashboard-overview">
       <h2 class="metric-title">Dashboard Overview</h2>
       <div class="top-header-profile-bar">
         <div class="user-info-side">
           <img
-            src="https://i.pravatar.cc/150?img=33"
-            alt="User Avatar"
+            alt="Profile picture"
             class="profile-avatar"
+            hidden
           />
-          <span class="profile-name">Nathan Chacha (Owner)</span>
+          <span class="profile-name" id="dashboard-user-name">Pharmacy dashboard</span>
         </div>
-        <i class="fa-solid fa-gear settings-icon"></i>
+        <button type="button" class="dashboard-logout-button" id="logout-btn">Log out</button>
+        <button type="button" class="settings-icon settings-menu-toggle" aria-label="Open dashboard settings" aria-haspopup="true" aria-expanded="false" aria-controls="settings-menu" title="Settings"><i class="fa-solid fa-gear"></i></button>
+        <div class="profile-settings-dropdown" id="settings-menu" hidden>
+          <h3>Dashboard settings</h3>
+          <form id="settings-form">
+            <label class="setting-option"><input type="checkbox" id="show-stock-notifications" checked /> Show stock alerts</label>
+            <label class="setting-option"><input type="checkbox" id="show-order-notifications" checked /> Show order updates</label>
+          </form>
+                    <button type="button" class="settings-done-button" data-open-profile>Edit pharmacy profile</button>
+          <button type="button" class="settings-done-button" data-close-settings-menu>Done</button>
+        </div>
       </div>
     </div>
     <!-------------------------------------- The Widgets-------------------------------------------------->
@@ -109,7 +124,7 @@
       </div>
 
       <!----------------------------------- Widget 3 -------------------------------------->
-      <div class="metric-monthly-sales">
+      <div class="metric-monthly-sales" id="sales-reporting">
         <div class="sales">
           <span>Monthly Sales</span>
           <span class="sales-new">New</span>
@@ -166,7 +181,7 @@
       </div>
 
       <!------------------------------------ Widget 4 ------------------------------->
-      <div class="metric-orders-received">
+      <div class="metric-orders-received" id="orders-fulfilment">
         <div class="order">
           <span>Orders Received</span>
           <span class="order-new">New</span>
@@ -182,13 +197,13 @@
       </div>
 
       <!------------------------------------ Widget 5 --------------------------------->
-      <div class="metric-inventory">
+      <div class="metric-inventory" id="inventory-management">
         <div class="inventory-widget">
           <div class="header-row">
             <h2 class="text-management">Inventory Management</h2>
             <div class="controls-group">
-              <input class="metric-filter" placeholder="filter" />
-              <button class="filter-button">Filter</button>
+              <input class="metric-filter" id="inventory-filter" type="search" placeholder="Filter name, SKU, or category" />
+              <button type="button" class="filter-button" id="apply-inventory-filter">Filter</button>
               <button
                 type="button"
                 class="filter-button"
@@ -223,46 +238,33 @@
           <div class="notification">
             <span class="notif-title">Notifications</span>
             <div class="header-actions">
-              <div class="bell-badge-wrapper">
+              <button type="button" class="bell-badge-wrapper notification-toggle" data-toggle-notifications aria-expanded="true" aria-controls="notifications-list" aria-label="Hide notifications">
                 <i class="fa-regular fa-bell bell-icon"></i>
                 <span class="red-badge-dot"></span>
-              </div>
-              <i class="fa-solid fa-chevron-down dropdown-icon"></i>
+              </button>
+              <button type="button" class="dropdown-icon notification-toggle" data-toggle-notifications aria-expanded="true" aria-controls="notifications-list" aria-label="Hide notifications"><i class="fa-solid fa-chevron-down"></i></button>
             </div>
           </div>
-          <div class="notifications-list">
-            <div class="notif-item">
-              <div class="notif-icon-wrapper">
-                <i class="fa-regular fa-bell normal-bell"></i>
-                <span class="notif-red-dot"></span>
-              </div>
+          <div class="notifications-list" id="notifications-list">
+            <div class="notif-item" role="button" tabindex="0" data-notification-id="order-packed-1" data-notification-type="order">
+              <div class="notif-icon-wrapper"><i class="fa-regular fa-bell normal-bell"></i><span class="notif-red-dot"></span></div>
               <span class="notif-text">Order #1234 packed</span>
             </div>
-
-            <div class="notif-item active-highlight">
-              <div class="notif-icon-wrapper">
-                <i class="fa-solid fa-triangle-exclamation warning-icon"></i>
-              </div>
+            <div class="notif-item active-highlight" role="button" tabindex="0" data-notification-id="stock-ibuprofen" data-notification-type="stock">
+              <div class="notif-icon-wrapper"><i class="fa-solid fa-triangle-exclamation warning-icon"></i></div>
               <span class="notif-text">Low stock on Ibuprofen</span>
             </div>
-
-            <div class="notif-item">
-              <div class="notif-icon-wrapper">
-                <i class="fa-regular fa-bell normal-bell"></i>
-              </div>
+            <div class="notif-item" role="button" tabindex="0" data-notification-id="stock-metformin" data-notification-type="stock">
+              <div class="notif-icon-wrapper"><i class="fa-regular fa-bell normal-bell"></i></div>
               <span class="notif-text">Low stock on Metformin</span>
             </div>
-
-            <div class="notif-item">
-              <div class="notif-icon-wrapper">
-                <i class="fa-regular fa-bell normal-bell"></i>
-              </div>
+            <div class="notif-item" role="button" tabindex="0" data-notification-id="order-packed-2" data-notification-type="order">
+              <div class="notif-icon-wrapper"><i class="fa-regular fa-bell normal-bell"></i></div>
               <span class="notif-text">Order #1234 packed</span>
             </div>
           </div>
-        </div>
         <!------------------------------------ Widget 7 ----------------------------->
-        <div class="metric-reviews">
+        <div class="metric-reviews" id="customer-feedback">
           <div class="review">
             <span class="rating">Customer Reviews</span>
           </div>
@@ -278,10 +280,72 @@
        -->
     </main>
 
+    <div id="dashboard-toast" class="dashboard-toast" role="status" aria-live="polite"></div>
+
+
+    <dialog id="profile-edit-modal" class="dashboard-action-dialog profile-edit-dialog">
+      <form id="profile-edit-form">
+        <h3>Edit pharmacy profile</h3>
+        <p>Keep your contact and pharmacy details up to date.</p>
+        <div class="profile-edit-grid">
+          <label>Full name<input id="profile-name" type="text" maxlength="80" autocomplete="name" required /></label>
+          <label>Email<input id="profile-email" type="email" readonly /></label>
+          <label>Phone<input id="profile-phone" type="tel" maxlength="32" autocomplete="tel" /></label>
+        </div>
+        <div class="profile-photo-field">
+          <span class="profile-photo-label">Profile picture</span>
+          <div class="profile-photo-row">
+            <img id="profile-photo-preview" class="profile-photo-preview" alt="Profile picture preview" hidden />
+            <div class="profile-photo-controls">
+              <input id="profile-photo-input" type="file" accept="image/png,image/jpeg,image/webp" aria-label="Choose profile picture" />
+              <button type="button" id="profile-photo-choose">Choose photo</button>
+              <small id="profile-photo-status" aria-live="polite">PNG, JPEG, or WebP · up to 5 MB</small>
+            </div>
+          </div>
+        </div>
+        <h4 class="profile-section-title">Pharmacy details</h4>
+        <div class="profile-edit-grid">
+          <label>Pharmacy name<input id="profile-pharmacy-name" type="text" maxlength="120" required /></label>
+          <label>Your role<input id="profile-job-title" type="text" maxlength="80" required /></label>
+          <label>Branch<input id="profile-branch" type="text" maxlength="120" /></label>
+          <label>Pharmacy address<input id="profile-address" type="text" maxlength="240" /></label>
+        </div>
+        <p id="profile-edit-message" class="profile-edit-message" role="status" aria-live="polite" hidden></p>
+        <div class="modal-actions">
+          <button type="button" data-close-profile>Cancel</button>
+          <button type="submit">Save profile</button>
+        </div>
+      </form>
+    </dialog>    <dialog id="order-modal" class="dashboard-action-dialog">
+      <form id="order-form">
+        <h3>Place a demo order</h3>
+        <p id="order-modal-description">Demo request only: it is saved in this browser and is not sent to a supplier. Suggested quantity replenishes stock to the reorder point.</p>
+        <input type="hidden" id="order-item-id" />
+        <label>Medicine<input id="order-item-name" type="text" readonly /></label>
+        <label>Quantity<input id="order-quantity" type="number" min="1" value="1" required /></label>
+        <div class="modal-actions">
+          <button type="button" id="cancel-order-btn">Cancel</button>
+          <button type="submit">Save demo order</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog id="staff-modal" class="dashboard-action-dialog">
+      <form id="staff-form">
+        <h3>Staff management</h3>
+        <p>Staff entries are saved in this browser for this project demo.</p>
+        <label>Name<input id="staff-name" type="text" required maxlength="80" /></label>
+        <label>Role<input id="staff-role" type="text" required maxlength="60" placeholder="e.g. Pharmacist" /></label>
+        <div class="modal-actions"><button type="submit">Add staff member</button></div>
+        <div id="staff-list" class="dashboard-list"></div>
+        <div class="modal-actions"><button type="button" data-close-dialog>Close</button></div>
+      </form>
+    </dialog>
+
     <dialog id="add-med-modal" class="med-modal">
       <form id="add-med-form">
         <input type="hidden" id="med-id" value="" />
-        <h3>Add New Medicine</h3>
+        <h3 id="modal-title">Add New Medicine</h3>
         <label
           >Item Name:
           <input type="text" id="med-name" name="name" required /></label
@@ -339,5 +403,7 @@
     </dialog>
     <script src="../js/inventory.js"></script>
     <script src="../js/reviews-widget.js"></script>
+    <script src="../js/dashboard-interactions.js"></script>
+    <script type="module" src="../js/auth-guard.js?v=2"></script>
   </body>
 </html>

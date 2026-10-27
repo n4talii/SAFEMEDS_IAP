@@ -2,13 +2,13 @@ const express = require("express");
 const router = express.Router();
 const supabase = require("../db");
 
-//GET /api/inventory - Retrieve all items from Superbase
+//GET /api/inventory - Retrieve all items from Superbase (optional ?search=)
 router.get("/", async (req, res) => {
+  const { search } = req.query;
   try {
-    const { data, error } = await supabase
-      .from("inventory")
-      .select("*")
-      .order("id", { ascending: true });
+    let query = supabase.from("inventory").select("*");
+    if (search) query = query.ilike("item_name", `%${search}%`);
+    const { data, error } = await query.order("id", { ascending: true });
 
     if (error) throw error;
     res.json(data);

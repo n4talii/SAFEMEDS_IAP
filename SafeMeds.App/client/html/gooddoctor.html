@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="../css/global.css" />
 
 </head>
-<body>
+<body class="auth-navigation-pending">
 
 <!-- NAV -->
     <!-- NAVBAR -->
@@ -22,10 +22,17 @@
       <nav class="navbar-links">
         <a href="landing.html">Home</a>
         <a href="gooddoctor.html">Good Doctor</a>
-        <a href="dashboard.html">Dashboard</a>
+        <a href="dashboard.html" class="owner-dashboard-link" hidden>Dashboard</a>
         <a href="about.html">About</a>
-        <a class="btn-primary login-btn landing-cta" href="signup.html">Login</a>
-        <a class="btn-primary register-btn landing-cta" href="register.html">Register</a>
+        <span class="public-auth-links">
+          <a class="btn-primary login-btn landing-cta" href="signup.html">Login</a>
+          <a class="btn-primary register-btn landing-cta" href="register.html">Register</a>
+        </span>
+        <span class="signed-in-nav" hidden>
+          <img class="signed-in-nav-avatar" alt="Profile picture" hidden />
+          <span id="signed-in-nav-name"></span>
+          <button type="button" id="signed-in-nav-logout">Log out</button>
+        </span>
       </nav>
     </header>
 
@@ -37,13 +44,13 @@
       <div class="hero-pill"></div>
 
       <div class="hero-content">
-        <span class="hero-eyebrow">Welcome to your personal 24/7 doctor</span>
+        <span class="hero-eyebrow">A clear, supportive health guide</span>
         <h1 class="hero-title">
           GoodDoctor AI
          
         </h1>
         <p class="hero-sub">
-          SafeMeds GoodDoctor AI is your personal AI-powered medical assistant, available 24/7 to help you understand your symptoms, provide guidance, and assist in making informed health decisions. Please note that while GoodDoctor AI can offer valuable insights, it is not a substitute for professional medical advice. Always consult a licensed healthcare provider for any medical concerns or emergencies.
+          GoodDoctor is a symptom-guidance prototype that helps you organize what you are feeling and consider appropriate next steps. It does not diagnose, prescribe, or replace a clinician.
         </p>
 
     </section>
@@ -53,7 +60,7 @@
 <!-- MED MODAL -->
 <div class="med-modal" id="medModal" onclick="closeMedModal(event)">
   <div class="med-modal-inner" id="medModalInner">
-    <button class="med-modal-close" onclick="document.getElementById('medModal').classList.remove('show')">✕ Close</button>
+    <button type="button" class="med-modal-close" onclick="document.getElementById('medModal').classList.remove('show')">✕ Close</button>
     <div id="medModalContent"></div>
   </div>
 </div>
@@ -67,32 +74,14 @@
   <!-- LEFT SIDEBAR -->
   <div class="sidebar">
     <div class="card">
-      <div class="card-header">Conversation History</div>
-      <div id="historyList">
-        <div class="history-item active" onclick="loadSession(0,this)">
-          <div class="h-avatar">🩺</div>
-          <div class="h-info">
-            <div class="h-name">Good Doctor</div>
-            <div class="h-sub" id="h-sub-0">Chat with Dr. Ava…</div>
-          </div>
-          <div class="h-time" id="h-time-0">Now</div>
-        </div>
-        <div class="history-item" onclick="loadSession(1,this)">
-          <div class="h-avatar">🩺</div>
-          <div class="h-info"><div class="h-name">Good Doctor</div><div class="h-sub">General check-in</div></div>
-          <div class="h-time">18 min</div>
-        </div>
-        <div class="history-item" onclick="loadSession(2,this)">
-          <div class="h-avatar">🩺</div>
-          <div class="h-info"><div class="h-name">Good Doctor</div><div class="h-sub">Headache symptoms</div></div>
-          <div class="h-time">1 hr</div>
-        </div>
-        <div class="history-item" onclick="loadSession(3,this)">
-          <div class="h-avatar">🩺</div>
-          <div class="h-info"><div class="h-name">Good Doctor</div><div class="h-sub">Allergy follow-up</div></div>
-          <div class="h-time">Yesterday</div>
+      <div class="card-header history-header">
+        <span>Conversation History</span>
+        <div class="history-controls">
+          <button type="button" class="history-action" id="newChatBtn">New chat</button>
+          <button type="button" class="history-clear" id="clearHistoryBtn" aria-label="Clear all history" title="Clear all history">Clear</button>
         </div>
       </div>
+      <div id="historyList" aria-label="Saved conversations"></div>
     </div>
 
     <div class="card actions-card" id="actionsCard">
@@ -100,15 +89,15 @@
       <div id="actionsList">
         <div class="action-item">
           <div class="action-icon blue">▶</div>
-          <div class="action-text">Describe your symptoms to receive personalized guidance from Dr. Ava.</div>
+          <div class="action-text">Describe your symptoms to get general next-step guidance.</div>
         </div>
         <div class="action-item">
           <div class="action-icon teal">💧</div>
-          <div class="action-text">Stay hydrated — drink at least 8 glasses of water daily.</div>
+          <div class="action-text">Share when symptoms began and whether they are changing.</div>
         </div>
         <div class="action-item">
           <div class="action-icon green">✓</div>
-          <div class="action-text">Keep a symptom journal for more accurate diagnosis assistance.</div>
+          <div class="action-text">Note symptom changes to share with a clinician.</div>
         </div>
         <div class="action-item">
           <div class="action-icon gray">⚙</div>
@@ -125,19 +114,19 @@
     <div class="card chat-card">
       <div class="chat-header">
         <div class="chat-title-wrap">
-          <div class="chat-title">Chat with Dr. Ava</div>
-          <div class="chat-sub">AI-powered health assistant — not a substitute for professional medical advice</div>
+          <div class="chat-title">Chat with GoodDoctor</div>
+          <div class="chat-sub" id="gooddoctor-ai-status" aria-live="polite">Checking Good Doctor…</div>
         </div>
         <div class="typing-indicator" id="typingIndicator">
           <div class="typing-dots"><span></span><span></span><span></span></div>
-          Dr. Ava is typing…
+          GoodDoctor is responding…
         </div>
       </div>
-      <div class="chat-messages" id="chatMessages">
+      <div class="chat-messages" id="chatMessages" role="log" aria-live="polite" aria-relevant="additions">
         <div class="msg dr">
-          <div class="msg-avatar">👩‍⚕️</div>
+          <div class="msg-avatar">💬</div>
           <div>
-            <div class="msg-bubble">Hello! I'm Dr. Ava 👋 I'm here to help you understand your symptoms and guide you toward the right care. How are you feeling today?</div>
+            <div class="msg-bubble">Hello! Tell me what you are feeling and when it started. I can help organize next steps, but I cannot diagnose or prescribe.</div>
             <div class="msg-time">Just now</div>
           </div>
         </div>
@@ -151,8 +140,8 @@
         <div class="chip" onclick="useChip(this)">Sore throat</div>
       </div>
       <div class="chat-input-row">
-        <input class="chat-input" id="chatInput" type="text" placeholder="Describe your symptoms…" onkeydown="if(event.key==='Enter')sendMessage()" />
-        <button class="send-btn" id="sendBtn" onclick="sendMessage()">➤</button>
+        <input class="chat-input" id="chatInput" type="text" placeholder="Describe your symptoms…" />
+        <button class="send-btn" id="sendBtn" type="button" aria-label="Send message" title="Send message">➤</button>
       </div>
     </div>
 
@@ -164,7 +153,7 @@
         <div class="card-header">Medicine Guidance Cards</div>
         <div class="med-search-row">
           <input class="med-search-input" id="medSearchInput" type="text" placeholder="Search a medicine…" onkeydown="if(event.key==='Enter')searchMedicine()" />
-          <button class="med-search-btn" onclick="searchMedicine()">Search</button>
+          <button type="button" class="med-search-btn" onclick="searchMedicine()">Search</button>
         </div>
         <div class="med-list" id="medList">
           <div class="med-item" onclick="openMedDetail('ibuprofen')">
@@ -196,7 +185,7 @@
         <div class="dosage-add-row">
           <input class="dosage-input" id="reminderMed" placeholder="Medicine name" />
           <input class="dosage-input" id="reminderTime" type="time" style="width:95px" value="08:00" />
-          <button class="dosage-add-btn" onclick="addReminder()">+ Add</button>
+          <button type="button" class="dosage-add-btn" onclick="addReminder()">+ Add</button>
         </div>
         <div class="reminders-list" id="remindersList"></div>
         <div class="cal-grid" id="calGrid"></div>
@@ -214,16 +203,16 @@
 
     <!-- CONDITIONS -->
     <div class="card conditions-card">
-      <div class="cond-title">Suggested Conditions</div>
-      <div class="cond-sub" id="condSubText">Chat with Dr. Ava to get a real-time analysis</div>
+      <div class="cond-title">Care guidance</div>
+      <div class="cond-sub" id="condSubText">General guidance only · not a diagnosis</div>
       <div class="cond-row" id="condRow">
         <div class="cond-item">
-          <div class="cond-name" style="font-size:11.5px;color:var(--gray-400);font-weight:400">No analysis yet</div>
+          <div class="cond-name" style="font-size:11.5px;color:var(--gray-400);font-weight:400">No assessment yet</div>
           <div class="conf-lbl">Confidence</div>
           <div class="conf-bar"><div class="conf-fill" style="width:0%"></div></div>
         </div>
         <div class="cond-item">
-          <div class="cond-name" style="font-size:11.5px;color:var(--gray-400);font-weight:400">No analysis yet</div>
+          <div class="cond-name" style="font-size:11.5px;color:var(--gray-400);font-weight:400">No assessment yet</div>
           <div class="conf-lbl">Confidence</div>
           <div class="conf-bar"><div class="conf-fill" style="width:0%;background:linear-gradient(90deg,var(--amber),#f97316)"></div></div>
         </div>
@@ -232,9 +221,9 @@
 
     <!-- DR AVA -->
     <div class="card ava-card">
-      <div class="ava-avatar">👩‍⚕️</div>
-      <div class="ava-name">Dr. Ava</div>
-      <div class="ava-role">AI Medical Assistant · SafeMeds</div>
+      <div class="ava-avatar">💬</div>
+      <div class="ava-name">GoodDoctor</div>
+      <div class="ava-role">Symptom Guide · SafeMeds</div>
       <div class="ava-badges">
         <span class="ava-badge online" id="avaBadge">● Online</span>
         <span class="ava-badge avail">24/7 Available</span>
@@ -247,17 +236,17 @@
       <div class="emg-default" id="emgDefault">No active alerts. Chat to begin symptom analysis.</div>
       <div class="emg-inner" id="emgInner">
         <div class="alert-label">⚠ HIGH PRIORITY:</div>
-        <p id="emgText">Your symptoms are serious. Please proceed to the nearest Emergency Room or call <strong>911</strong> immediately.</p>
+        <p id="emgText">For a medical emergency in Kenya, call 999, 112, or 911, or go to the nearest emergency department.</p>
       </div>
     </div>
 
     <!-- SAFETY INFO -->
     <div class="card safety-card">
-      <div class="safety-title">Safety Information</div>
+      <div class="safety-title">Care urgency · rough guide</div>
       <div class="safety-bar-wrap"><div class="safety-needle" id="safetyNeedle" style="left:10%"></div></div>
-      <div class="safety-bar-lbls"><span>Safe</span><span>Medium</span><span>Critical</span></div>
+      <div class="safety-bar-lbls"><span>More details</span><span>Contact care</span><span>Emergency</span></div>
       <div class="safety-desc" id="safetyDesc">
-        Describe your symptoms to receive a personalized safety assessment. Always consult a licensed physician for a formal diagnosis.
+        This prototype cannot assess medical risk reliably or provide a diagnosis.
       </div>
     </div>
 
@@ -309,10 +298,7 @@
 </div>
       </div>
     </footer>
-  </body>
-</html>
-
-<script>
+  <script>
 
   
 
@@ -351,7 +337,7 @@ function buildCalendar() {
 
 function toggleDay(d) {
   if(markedDays.has(d)) markedDays.delete(d); else markedDays.add(d);
-  buildCalendar();
+    buildCalendar();
 }
 
 // ──────────────────────────────────────────────
@@ -540,325 +526,506 @@ function closeMedModal(e) {
 }
 
 // ──────────────────────────────────────────────
-// AI CHAT — Claude API
-// ──────────────────────────────────────────────
+// Emergency checks run locally before any request to the server AI route.
 let chatHistory = [];
 let isTyping = false;
+let conversations = [];
+let currentConversationId = null;
+let conversationStorageKey = null;
+let storageWarningShown = false;
+const GOODDOCTOR_API_BASE = window.SAFEMEDS_API_BASE || "http://localhost:8080";
+const EMERGENCY_MESSAGE_PATTERN = /chest\s+pain|can't\s+breathe|cannot\s+breathe|difficulty\s+breathing|unconscious|seizure|severe\s+bleeding|overdose|\bstroke\b|swollen\s+(?:face|throat)|suicid|self[-\s]harm/i;
+const EMERGENCY_REPLY = 'This may be an emergency. Call 999 or 112, or go to the nearest emergency department now. Do not wait for a reply here.';
 
-const SYSTEM_PROMPT = `You are Dr. Ava, a compassionate and professional AI health assistant for SafeMeds. Your role is to help users understand their symptoms and guide them toward appropriate care.
-
-Guidelines:
-- Be warm, empathetic, and clear. Never be alarmist unless symptoms are genuinely serious.
-- For each response, always end with a JSON block (wrapped in <<<JSON and >>>) that contains:
-  {
-    "condition1": { "name": "Possible Condition Name", "confidence": 60 },
-    "condition2": { "name": "Another Possible Condition", "confidence": 35 },
-    "severity": "low" | "medium" | "high" | "emergency",
-    "actions": ["Action 1", "Action 2", "Action 3"],
-    "safetyLevel": 15
+async function updateGoodDoctorStatus() {
+  const status = document.getElementById('gooddoctor-ai-status');
+  if (!status) return;
+  try {
+    const response = await fetch(`${GOODDOCTOR_API_BASE}/api/gooddoctor/status`, { signal: AbortSignal.timeout(4000) });
+    const result = await response.json();
+    status.textContent = response.ok && result.liveAiConfigured
+      ? 'Live AI configured · not a clinician'
+      : 'Built-in guidance active · live AI key needed';
+    status.dataset.live = String(response.ok && result.liveAiConfigured);
+  } catch {
+    status.textContent = 'Live AI server unavailable · built-in guidance active';
+    status.dataset.live = 'false';
   }
-  where safetyLevel is 0-100 (0=safe, 100=critical emergency).
-- Keep your conversational response BEFORE the JSON block, under 120 words.
-- Always add a disclaimer that you're not a substitute for professional medical advice.
-- If symptoms suggest emergency (chest pain, difficulty breathing, stroke signs, severe bleeding), set severity to "emergency" and safetyLevel to 85+.
-- Suggest relevant medicines from: Ibuprofen, Cetirizine, Paracetamol, Amoxicillin, Metformin, Antihistamines, Antacids, etc.`;
-
-function appendMessage(role, text, isAlert=false) {
-  const messages = document.getElementById('chatMessages');
-  const div = document.createElement('div');
-  const t = now();
-  if(role==='user') {
-    div.className = 'msg user';
-    div.innerHTML = `<div class="msg-avatar user-av">👤</div><div><div class="msg-bubble">${text}</div><div class="msg-time">${t}</div></div>`;
-  } else {
-    div.className = `msg dr${isAlert?' alert-msg':''}`;
-    div.innerHTML = `<div class="msg-avatar">👩‍⚕️</div><div><div class="msg-bubble">${text}</div><div class="msg-time">${t}</div></div>`;
-  }
-  messages.appendChild(div);
-  messages.scrollTop = messages.scrollHeight;
-  return div;
 }
 
-function setTyping(on) {
-  isTyping = on;
-  document.getElementById('typingIndicator').className = 'typing-indicator' + (on?' show':'');
-  document.getElementById('sendBtn').disabled = on;
-  document.getElementById('chatInput').disabled = on;
-  document.getElementById('avaBadge').textContent = on ? '● Typing…' : '● Online';
-}
+void updateGoodDoctorStatus();
 
-function updateSidePanel(parsed) {
-  // Conditions
-  if(parsed.condition1 || parsed.condition2) {
-    document.getElementById('condSubText').textContent = 'Based on real-time symptom analysis';
-    const row = document.getElementById('condRow');
-    const c1 = parsed.condition1 || {name:'—', confidence:0};
-    const c2 = parsed.condition2 || {name:'—', confidence:0};
-    row.innerHTML = `
-      <div class="cond-item">
-        <div class="cond-name">${c1.name}</div>
-        <div class="conf-lbl">Confidence ${c1.confidence}%</div>
-        <div class="conf-bar"><div class="conf-fill" style="width:${c1.confidence}%"></div></div>
-      </div>
-      <div class="cond-item">
-        <div class="cond-name">${c2.name}</div>
-        <div class="conf-lbl">Confidence ${c2.confidence}%</div>
-        <div class="conf-bar"><div class="conf-fill" style="width:${c2.confidence}%;background:linear-gradient(90deg,var(--amber),#f97316)"></div></div>
-      </div>`;
+function updateSidePanel(result) {
+  const summary = document.getElementById('condSubText');
+  if (summary) summary.textContent = 'General guidance only · not a diagnosis';
+  const row = document.getElementById('condRow');
+  if (row) {
+    const title = result.severity === 'emergency' ? 'Emergency help now' : result.severity === 'high' ? 'Seek care today' : result.severity === 'medium' ? 'Monitor and consider a clinician' : 'More details needed';
+    row.innerHTML = `<div class="cond-item"><div class="cond-name">${title}</div><div class="conf-lbl">This guide cannot diagnose a condition.</div></div>`;
   }
-  // Safety needle
-  const sl = Math.min(100, Math.max(0, parsed.safetyLevel || 10));
-  document.getElementById('safetyNeedle').style.left = sl + '%';
-  // Safety desc
-  const descs = {
-    low:'Your current symptoms appear mild. Monitor closely and rest. Consult a doctor if symptoms worsen.',
-    medium:'Your symptoms suggest moderate concern. Consider visiting a clinic for proper evaluation.',
-    high:'Your symptoms require prompt medical attention. Please see a doctor today.',
-    emergency:'⚠ EMERGENCY: Your symptoms may be life-threatening. Call 911 or go to the nearest ER immediately.'
+  const level = Math.min(100, Math.max(0, Number(result.safetyLevel) || 10));
+  document.getElementById('safetyNeedle').style.left = `${level}%`;
+  const descriptions = {
+    low: 'I need more information before offering useful general guidance. A clinician can assess symptoms properly.',
+    medium: 'Monitor how you feel. Contact a healthcare professional if symptoms worsen, persist, or concern you.',
+    high: 'Please seek medical advice today, especially if symptoms are getting worse.',
+    emergency: 'Get emergency help now. In Kenya, call 999, 112, or 911, or go to the nearest emergency department.'
   };
-  document.getElementById('safetyDesc').textContent = descs[parsed.severity] || descs.low;
-  // Emergency panel
-  const emgInner = document.getElementById('emgInner');
-  const emgDefault = document.getElementById('emgDefault');
-  if(parsed.severity==='emergency' || sl >= 75) {
-    emgInner.classList.add('show');
-    emgDefault.style.display='none';
-    document.getElementById('emgText').innerHTML = 'Your symptoms are serious. Please proceed to the nearest Emergency Room or call <strong>911</strong> immediately.';
-  } else if(parsed.severity==='high') {
-    emgInner.classList.add('show');
-    emgDefault.style.display='none';
-    document.getElementById('emgText').innerHTML = 'Your symptoms warrant prompt medical attention. Please visit a clinic or urgent care today.';
+  document.getElementById('safetyDesc').textContent = descriptions[result.severity] || descriptions.low;
+  const panel = document.getElementById('emgInner');
+  const defaultPanel = document.getElementById('emgDefault');
+  if (result.severity === 'emergency' || result.severity === 'high') {
+    panel.classList.add('show');
+    defaultPanel.style.display = 'none';
+    document.getElementById('emgText').textContent = result.severity === 'emergency'
+      ? 'Call 999, 112, or 911 in Kenya, or go to the nearest emergency department now. Do not wait for this chat.'
+      : 'Please arrange medical assessment today. If symptoms become severe or you feel unsafe, seek emergency help.';
   } else {
-    emgInner.classList.remove('show');
-    emgDefault.style.display='block';
+    panel.classList.remove('show');
+    defaultPanel.style.display = 'block';
   }
-  // Actions
-  if(parsed.actions && parsed.actions.length) {
-    const icons=['blue','teal','green','gray'];
-    const syms=['▶','💧','✓','⚙'];
-    document.getElementById('actionsList').innerHTML = parsed.actions.slice(0,4).map((a,i)=>`
-      <div class="action-item">
-        <div class="action-icon ${icons[i]}">${syms[i]}</div>
-        <div class="action-text">${a}</div>
-      </div>`).join('');
+  const actions = document.getElementById('actionsList');
+  if (actions) {
+    actions.replaceChildren(...result.actions.map((action, index) => {
+      const item = document.createElement('div');
+      item.className = `action-item`;
+      const icon = document.createElement('div');
+      icon.className = `action-icon ${['blue', 'teal', 'green'][index % 3]}`;
+      icon.textContent = ['•', '✓', 'ℹ'][index % 3];
+      const text = document.createElement('div');
+      text.className = 'action-text';
+      text.textContent = action;
+      item.append(icon, text);
+      return item;
+    }));
   }
-  // Update history preview
-  const sub = document.getElementById('h-sub-0');
-  if(sub) sub.textContent = (parsed.condition1?.name || 'Symptom analysis') + '…';
-  const hTime = document.getElementById('h-time-0');
-  if(hTime) hTime.textContent = now();
+}
+
+function assessMessage(history, currentText) {
+  const text = history.filter((message) => message.role === 'user').map((message) => message.content).join(' ').toLowerCase();
+  const emergencyPattern = /chest pain|difficulty breathing|can't breathe|cannot breathe|shortness of breath|blue lips|face droop|one[- ]sided weakness|slurred speech|stroke|unconscious|not waking|seizure|heavy bleeding|severe bleeding|throat swelling|tongue swelling|severe allergic reaction|overdose|poison|suicid|want to die|kill myself/;
+  const activeText = text.replace(/\b(?:no|not|never|without|denies|don't have|do not have)\s+(?:any\s+)?(?:chest pain|difficulty breathing|shortness of breath|face droop|one[- ]sided weakness|slurred speech|unconsciousness|a seizure|heavy bleeding|throat swelling|tongue swelling)\b/g, '');
+  if (emergencyPattern.test(activeText)) {
+    return {
+      severity: 'emergency', safetyLevel: 92,
+      reply: 'I’m concerned by what you described. Please get emergency help now: call 999, 112, or 911 in Kenya, or go to the nearest emergency department. Ask someone nearby to stay with you. Don’t wait for more chat messages.',
+      actions: ['Call emergency services or go to an emergency department now.', 'Ask someone you trust to stay with you.', 'Do not drive yourself if you feel faint, confused, or seriously unwell.']
+    };
+  }
+  const userTurns = history.filter((message) => message.role === 'user').length;
+  const symptomPattern = /headache|head hurts|fever|temperature|cough|sore throat|stomach|abdominal|nausea|vomit|diarrh|rash|itch|allerg|pain|dizzy|fatigue|weak/;
+  const worsening = /getting worse|worsening|severe|very painful|cannot keep fluids|dehydrated|persistent|for more than/;
+  const severity = worsening.test(text) ? 'high' : currentText.trim().split(/\s+/).length < 4 ? 'low' : 'medium';
+  let followUp = 'What symptom is bothering you most, when did it start, and how severe is it from 0 to 10?';
+  if (/headache|head hurts/.test(text)) followUp = 'Where is the headache, when did it start, and how severe is it from 0 to 10? Any vision changes, weakness, confusion, or stiff neck?';
+  else if (/fever|temperature/.test(text)) followUp = 'If you can, what temperature did you measure and how long have you had it? Are you able to drink fluids?';
+  else if (/stomach|abdominal|nausea|vomit|diarrh/.test(text)) followUp = 'Where is the discomfort, when did it start, and are you able to keep fluids down?';
+  else if (/rash|itch|allerg/.test(text)) followUp = 'When did this start, and did it follow a new food, medicine, or product? Any swelling or trouble breathing?';
+  else if (/pain/.test(text)) followUp = 'Where exactly is the pain, when did it start, and how severe is it from 0 to 10?';
+  let reply;
+  if (!symptomPattern.test(text)) {
+    reply = 'I can help you think through general next steps. Tell me what you are feeling, when it began, and whether it is getting better or worse. Please do not include your name or other identifying details.';
+  } else if (userTurns < 3) {
+    reply = `Thanks for sharing that. I can’t diagnose the cause, but I can help organize what to do next. ${followUp} If relevant, include your age range, long-term conditions, pregnancy, and medicines you take.`;
+  } else if (severity === 'high') {
+    reply = 'Because you describe symptoms that are severe, persistent, or worsening, please contact a healthcare professional today. If you develop chest pain, difficulty breathing, fainting, confusion, or another rapidly worsening symptom, seek emergency help now.';
+  } else {
+    reply = 'Thanks, that context helps. I can’t confirm a cause. Rest, drink fluids if you can, and keep track of changes. A pharmacist or clinician can advise whether a medicine is suitable for you, especially if you take other medicines, have a health condition, or are pregnant. Seek care if symptoms worsen or do not improve.';
+  }
+  return {
+    severity, safetyLevel: severity === 'high' ? 68 : severity === 'medium' ? 38 : 15,
+    reply: `${reply}\n\nI’m a symptom-guidance prototype, not a clinician or a substitute for medical care.`,
+    actions: severity === 'high'
+      ? ['Contact a healthcare professional today.', 'Keep a note of when symptoms started and how they change.', 'Seek emergency help if severe warning signs appear.']
+      : ['Tell me when symptoms began and whether they are changing.', 'Avoid starting or changing medicines based only on this chat.', 'Contact a clinician or pharmacist if you are unsure or concerned.']
+  };
+}
+
+function appendMessage(role, text, isUrgent = false) {
+  const messages = document.getElementById('chatMessages');
+  if (!messages) return;
+  const isUser = role === 'user';
+  const row = document.createElement('div');
+  row.className = `msg ${isUser ? 'user' : 'dr'}${isUrgent ? ' alert-msg' : ''}`;
+
+  const avatar = document.createElement('div');
+  avatar.className = `msg-avatar${isUser ? ' user-av' : ''}`;
+  avatar.textContent = isUser ? '👤' : '💬';
+
+  const content = document.createElement('div');
+  const bubble = document.createElement('div');
+  bubble.className = 'msg-bubble';
+  bubble.textContent = text;
+  const time = document.createElement('div');
+  time.className = 'msg-time';
+  time.textContent = new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+  content.append(bubble, time);
+  row.append(avatar, content);
+  messages.appendChild(row);
+  messages.scrollTop = messages.scrollHeight;
+  return bubble;
+}
+
+const WELCOME_MESSAGE = 'Hello! Tell me what you are feeling and when it started. I can help organize next steps, but I cannot diagnose or prescribe.';
+
+function formatMessageTime(value) {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return '';
+  return date.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+}
+
+function showWelcomeMessage() {
+  const messages = document.getElementById('chatMessages');
+  if (!messages) return;
+  messages.replaceChildren();
+  const bubble = appendMessage('dr', WELCOME_MESSAGE);
+  bubble?.closest('.msg')?.querySelector('.msg-time')?.replaceChildren(document.createTextNode('Just now'));
+  document.getElementById('suggestionChips').style.display = '';
+}
+
+function showConversationMessages(conversation) {
+  const messages = document.getElementById('chatMessages');
+  if (!messages) return;
+  messages.replaceChildren();
+  conversation.messages.forEach((message) => {
+    const bubble = appendMessage(message.role === 'user' ? 'user' : 'dr', message.content);
+    const time = bubble?.closest('.msg')?.querySelector('.msg-time');
+    if (time) time.textContent = formatMessageTime(message.time);
+  });
+  document.getElementById('suggestionChips').style.display = conversation.messages.length ? 'none' : '';
+}
+
+function relativeConversationTime(updatedAt) {
+  const date = new Date(updatedAt);
+  if (Number.isNaN(date.getTime())) return '';
+  const elapsedMinutes = Math.max(0, Math.floor((Date.now() - date.getTime()) / 60_000));
+  if (elapsedMinutes < 1) return 'Just now';
+  if (elapsedMinutes < 60) return `${elapsedMinutes} min`;
+  if (elapsedMinutes < 24 * 60) return `${Math.floor(elapsedMinutes / 60)} hr`;
+  const today = new Date();
+  const yesterday = new Date(today);
+  yesterday.setDate(today.getDate() - 1);
+  if (date.toDateString() === yesterday.toDateString()) return 'Yesterday';
+  return date.toLocaleDateString();
+}
+
+function renderConversationHistory() {
+  const list = document.getElementById('historyList');
+  if (!list) return;
+  const sorted = [...conversations].sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+  list.replaceChildren();
+
+  sorted.forEach((conversation) => {
+    const item = document.createElement('div');
+    item.className = `history-item${conversation.id === currentConversationId ? ' active' : ''}`;
+    item.setAttribute('role', 'group');
+    item.setAttribute('aria-current', String(conversation.id === currentConversationId));
+
+    const open = document.createElement('button');
+    open.type = 'button';
+    open.className = 'history-open';
+    open.dataset.conversationId = conversation.id;
+    open.setAttribute('aria-label', `Open conversation: ${conversation.title}`);
+
+    const avatar = document.createElement('div');
+    avatar.className = 'h-avatar';
+    avatar.textContent = '🩺';
+
+    const info = document.createElement('div');
+    info.className = 'h-info';
+    const title = document.createElement('div');
+    title.className = 'h-sub';
+    title.textContent = conversation.title;
+    const name = document.createElement('div');
+    name.className = 'h-name';
+    name.textContent = 'Good Doctor';
+    info.append(name, title);
+
+    const time = document.createElement('div');
+    time.className = 'h-time';
+    time.textContent = relativeConversationTime(conversation.updatedAt);
+
+    const remove = document.createElement('button');
+    remove.type = 'button';
+    remove.className = 'history-delete';
+    remove.dataset.deleteConversation = conversation.id;
+    remove.setAttribute('aria-label', `Delete conversation: ${conversation.title}`);
+    remove.textContent = '×';
+
+    open.append(avatar, info, time);
+    item.append(open, remove);
+    list.appendChild(item);
+  });
+}
+
+function readConversations() {
+  if (!conversationStorageKey) return [];
+  try {
+    const saved = localStorage.getItem(conversationStorageKey);
+    const parsed = saved ? JSON.parse(saved) : [];
+    return Array.isArray(parsed)
+      ? parsed.filter((conversation) =>
+        conversation &&
+        typeof conversation.id === 'string' &&
+        typeof conversation.title === 'string' &&
+        typeof conversation.updatedAt === 'string' &&
+        Array.isArray(conversation.messages),
+      ).map((conversation) => ({
+        ...conversation,
+        messages: conversation.messages
+          .filter((message) =>
+            message &&
+            (message.role === 'user' || message.role === 'assistant') &&
+            typeof message.content === 'string',
+          )
+          .slice(-50),
+      })).slice(0, 20)
+      : [];
+  } catch {
+    return [];
+  }
+}
+
+function writeConversations() {
+  if (!conversationStorageKey) return;
+  try {
+    localStorage.setItem(conversationStorageKey, JSON.stringify(conversations));
+  } catch {
+    if (!storageWarningShown) {
+      storageWarningShown = true;
+      showToast('Chat storage is unavailable. You can keep chatting, but this history may not be saved.');
+    }
+  }
+}
+
+function loadMostRecentConversation() {
+  conversations = readConversations();
+  conversations.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+  currentConversationId = conversations[0]?.id || null;
+  chatHistory = [];
+  if (currentConversationId) {
+    const current = conversations[0];
+    chatHistory = current.messages.map(({ role, content }) => ({ role, content }));
+    showConversationMessages(current);
+  } else {
+    showWelcomeMessage();
+  }
+  renderConversationHistory();
+}
+
+function createConversation(firstMessage) {
+  const conversation = {
+    id: globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(36).slice(2)}`,
+    title: firstMessage.slice(0, 40),
+    updatedAt: new Date().toISOString(),
+    messages: [],
+  };
+  conversations.unshift(conversation);
+  currentConversationId = conversation.id;
+  conversations = conversations.slice(0, 20);
+  return conversation;
+}
+
+function saveConversationMessage(role, content) {
+  let conversation = conversations.find((item) => item.id === currentConversationId);
+  if (!conversation && role === 'user') conversation = createConversation(content);
+  if (!conversation) return;
+
+  conversation.messages.push({ role, content, time: new Date().toISOString() });
+  conversation.messages = conversation.messages.slice(-50);
+  conversation.updatedAt = new Date().toISOString();
+  conversations = [conversation, ...conversations.filter((item) => item.id !== conversation.id)]
+    .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt))
+    .slice(0, 20);
+  writeConversations();
+  renderConversationHistory();
+}
+
+function startNewConversation() {
+  if (isTyping) return;
+  currentConversationId = null;
+  chatHistory = [];
+  showWelcomeMessage();
+  renderConversationHistory();
+  document.getElementById('chatInput')?.focus();
+}
+
+function openConversation(id) {
+  if (isTyping) return;
+  const conversation = conversations.find((item) => item.id === id);
+  if (!conversation) return;
+  currentConversationId = conversation.id;
+  chatHistory = conversation.messages.map(({ role, content }) => ({ role, content }));
+  showConversationMessages(conversation);
+  renderConversationHistory();
+}
+
+function deleteConversation(id) {
+  if (isTyping) return;
+  const conversation = conversations.find((item) => item.id === id);
+  if (!conversation || !window.confirm(`Delete "${conversation.title}" from this browser?`)) return;
+  conversations = conversations.filter((item) => item.id !== id);
+  if (currentConversationId === id) {
+    currentConversationId = null;
+    chatHistory = [];
+    if (conversations.length) openConversation(conversations[0].id);
+    else showWelcomeMessage();
+  }
+  writeConversations();
+  renderConversationHistory();
+}
+
+async function initializeConversationStorage() {
+  let resolveInitialAuth;
+  const initialAuth = new Promise((resolve) => { resolveInitialAuth = resolve; });
+  try {
+    const [{ auth }, { onAuthStateChanged }] = await Promise.all([
+      import('../js/firebase-config.js'),
+      import('https://www.gstatic.com/firebasejs/12.15.0/firebase-auth.js'),
+    ]);
+    let firstState = true;
+    onAuthStateChanged(auth, (user) => {
+      const nextKey = `safemeds.gooddoctor.conversations.${user?.uid || 'guest'}`;
+      if (conversationStorageKey !== nextKey) {
+        conversationStorageKey = nextKey;
+        loadMostRecentConversation();
+      }
+      if (firstState) {
+        firstState = false;
+        resolveInitialAuth();
+      }
+    }, () => {
+      if (firstState) {
+        firstState = false;
+        resolveInitialAuth();
+      }
+    });
+    await Promise.race([
+      initialAuth,
+      new Promise((resolve) => setTimeout(resolve, 2500)),
+    ]);
+  } catch {
+    resolveInitialAuth();
+  }
+  if (!conversationStorageKey) {
+    conversationStorageKey = 'safemeds.gooddoctor.conversations.guest';
+    loadMostRecentConversation();
+  }
+}
+
+setInterval(renderConversationHistory, 60_000);
+void initializeConversationStorage();
+
+function setTyping(active) {
+  isTyping = active;
+  document.getElementById('typingIndicator')?.classList.toggle('show', active);
+  const input = document.getElementById('chatInput');
+  const sendButton = document.getElementById('sendBtn');
+  if (input) input.disabled = active;
+  if (sendButton) sendButton.disabled = active;
+  document.getElementById('newChatBtn').disabled = active;
+  document.getElementById('clearHistoryBtn').disabled = active;
+  document.querySelectorAll('.history-delete').forEach((button) => { button.disabled = active; });
+  if (!active) input?.focus();
+}
+
+async function requestLiveReply(messages) {
+  const response = await fetch(`${GOODDOCTOR_API_BASE}/api/gooddoctor/chat`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ messages }),
+    signal: AbortSignal.timeout(15_000),
+  });
+  if (!response.ok) throw new Error('Live AI request failed.');
+  const result = await response.json();
+  if (typeof result.reply !== 'string' || !result.reply.trim()) {
+    throw new Error('Live AI returned no reply.');
+  }
+  return result.reply.trim();
 }
 
 async function sendMessage(text) {
   const input = document.getElementById('chatInput');
-  const userText = text || input.value.trim();
-  if(!userText || isTyping) return;
-  input.value = '';
-  // Hide chips after first use
-  document.getElementById('suggestionChips').style.display='none';
+  const userText = String(text || input?.value || '').trim();
+  if (!userText || isTyping) return;
+  if (input) input.value = '';
+  const chips = document.getElementById('suggestionChips');
+  if (chips) chips.style.display = 'none';
   appendMessage('user', userText);
-  chatHistory.push({role:'user', content: userText});
-  setTyping(true);
-  try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({
-        model:'claude-sonnet-4-6',
-        max_tokens:1000,
-        system: SYSTEM_PROMPT,
-        messages: chatHistory
-      })
+  chatHistory.push({ role: 'user', content: userText });
+  saveConversationMessage('user', userText);
+
+  if (EMERGENCY_MESSAGE_PATTERN.test(userText)) {
+    appendMessage('dr', EMERGENCY_REPLY, true);
+    chatHistory.push({ role: 'assistant', content: EMERGENCY_REPLY });
+    saveConversationMessage('assistant', EMERGENCY_REPLY);
+    updateSidePanel({
+      severity: 'emergency',
+      safetyLevel: 100,
+      actions: ['Call 999 or 112, or go to the nearest emergency department now.', 'Do not wait for more chat messages.']
     });
-    const data = await res.json();
-    const fullText = data.content?.[0]?.text || "I'm sorry, I couldn't process that. Please try again.";
-    // Split conversational part from JSON
-    const jsonMatch = fullText.match(/<<<JSON([\s\S]*?)>>>/);
-    let displayText = fullText.replace(/<<<JSON[\s\S]*?>>>/g,'').trim();
-    if(!displayText) displayText = "I'm having trouble right now. Please try again.";
-    // Determine if emergency
-    let parsed = {};
-    if(jsonMatch) {
-      try { parsed = JSON.parse(jsonMatch[1].trim()); } catch(e) {}
-    }
-    const isEmergency = parsed.severity === 'emergency' || (parsed.safetyLevel || 0) >= 75;
-    appendMessage('dr', displayText, isEmergency);
-    chatHistory.push({role:'assistant', content: fullText});
-    updateSidePanel(parsed);
-  } catch(e) {
-    appendMessage('dr', "I'm having trouble connecting right now. Please check your internet and try again. For urgent symptoms, always call your local emergency number.");
+    return;
   }
-  setTyping(false);
+
+  const localAssessment = assessMessage(chatHistory, userText);
+  setTyping(true);
+  const responseBubble = appendMessage('dr', '');
+  try {
+    await new Promise((resolve) => requestAnimationFrame(resolve));
+    const answer = await requestLiveReply(chatHistory.slice(-10));
+    responseBubble.textContent = answer;
+    chatHistory.push({ role: 'assistant', content: answer });
+    saveConversationMessage('assistant', answer);
+    updateSidePanel(localAssessment);
+  } catch {
+    console.warn('GoodDoctor live AI unavailable; using built-in guidance.');
+    responseBubble?.closest('.msg')?.remove();
+    const fallback = `Live AI is unavailable right now. Here is the built-in guidance instead:\n\n${localAssessment.reply}`;
+    appendMessage('dr', fallback, localAssessment.severity === 'high');
+    chatHistory.push({ role: 'assistant', content: fallback });
+    saveConversationMessage('assistant', fallback);
+    updateSidePanel(localAssessment);
+    void updateGoodDoctorStatus();
+  } finally {
+    setTyping(false);
+  }
 }
 
 function useChip(el) {
   sendMessage(el.textContent);
 }
 
-function analyzeSymptoms(text) {
-  const lower = text.toLowerCase();
-  const conditions = [];
-  let severity = 'low';
-  let safetyLevel = 20;
-  const actions = [];
-
-  const add = (name, confidence) => conditions.push({ name, confidence });
-
-  if(/chest pain|shortness of breath|difficulty breathing|pressure in chest|tightness/.test(lower)) {
-    add('Possible Cardiac Distress', 88);
-    add('Seek Emergency Care', 72);
-    severity = 'emergency';
-    safetyLevel = 90;
-    actions.push('Call emergency services immediately.');
-    actions.push('Stop all activity and rest while waiting for help.');
-    actions.push('Share your symptoms with first responders.');
-  } else if(/severe headache|migraine|vision changes|stiff neck|high fever/.test(lower)) {
-    add('Severe Migraine or Neurological Concern', 78);
-    add('Monitor fever and symptoms closely', 55);
-    severity = 'high';
-    safetyLevel = 70;
-    actions.push('Rest in a quiet, dark room.');
-    actions.push('Stay hydrated and consider acetaminophen if appropriate.');
-    actions.push('See a doctor if symptoms worsen.');
-  } else if(/fever|cough|sore throat|runny nose|cold/.test(lower)) {
-    add('Viral Upper Respiratory Infection', 70);
-    add('Possible Seasonal Cold', 52);
-    severity = 'medium';
-    safetyLevel = 45;
-    actions.push('Rest and drink plenty of fluids.');
-    actions.push('Use warm salt-water gargles for sore throat.');
-    actions.push('Consider antihistamines or decongestants as needed.');
-  } else if(/allergy|itchy eyes|sneezing|pollen|hay fever/.test(lower)) {
-    add('Allergic Reaction', 74);
-    add('Possible Allergic Rhinitis', 58);
-    severity = 'medium';
-    safetyLevel = 35;
-    actions.push('Avoid known allergens and keep windows closed.');
-    actions.push('Try an antihistamine such as cetirizine.');
-    actions.push('Speak with a healthcare provider for long-term relief.');
-  } else if(/stomach ache|nausea|vomit|diarrhea|indigestion/.test(lower)) {
-    add('Gastrointestinal Discomfort', 68);
-    add('Possible Indigestion', 50);
-    severity = 'medium';
-    safetyLevel = 40;
-    actions.push('Eat light meals and drink water.');
-    actions.push('Avoid spicy or greasy foods.');
-    actions.push('See a doctor if pain becomes severe.');
-  } else if(/diabetes|blood sugar|metformin/.test(lower)) {
-    add('Diabetes Management Concern', 72);
-    add('Monitor blood sugar levels closely', 60);
-    severity = 'medium';
-    safetyLevel = 45;
-    actions.push('Follow your current medication plan.');
-    actions.push('Check blood glucose regularly.');
-    actions.push('Consult your physician for dosage questions.');
-  } else if(/pain|ache|discomfort/.test(lower)) {
-    add('Mild Pain or Discomfort', 60);
-    add('General Symptom Monitoring', 38);
-    severity = 'low';
-    safetyLevel = 25;
-    actions.push('Rest and stay hydrated.');
-    actions.push('Consider over-the-counter relief like ibuprofen if suitable.');
-    actions.push('Contact a doctor if symptoms persist.');
-  } else {
-    add('General Symptom Review', 50);
-    add('Need more detail for accurate advice', 35);
-    severity = 'low';
-    safetyLevel = 20;
-    actions.push('Describe your symptoms in more detail.');
-    actions.push('Stay hydrated and rest.');
-    actions.push('Consult a licensed healthcare provider if unsure.');
+document.getElementById('newChatBtn')?.addEventListener('click', startNewConversation);
+document.getElementById('clearHistoryBtn')?.addEventListener('click', () => {
+  if (isTyping || conversations.length === 0) return;
+  if (!window.confirm('Clear all saved conversations from this browser?')) return;
+  conversations = [];
+  currentConversationId = null;
+  chatHistory = [];
+  writeConversations();
+  renderConversationHistory();
+  showWelcomeMessage();
+});
+document.getElementById('historyList')?.addEventListener('click', (event) => {
+  const deleteButton = event.target.closest('[data-delete-conversation]');
+  if (deleteButton) {
+    event.stopPropagation();
+    deleteConversation(deleteButton.dataset.deleteConversation);
+    return;
   }
-
-  if(actions.length < 3) {
-    actions.push('Keep symptom notes to share with a provider.');
+  const item = event.target.closest('[data-conversation-id]');
+  if (item) openConversation(item.dataset.conversationId);
+});
+document.getElementById('chatInput')?.addEventListener('keydown', (event) => {
+  if (event.key === 'Enter' && !event.shiftKey) {
+    event.preventDefault();
+    sendMessage();
   }
-
-  return { condition1: conditions[0], condition2: conditions[1], severity, actions, safetyLevel };
-}
-
-function buildDoctorReply(text, parsed) {
-  const base = [];
-  if(parsed.severity === 'emergency') {
-    base.push('Your symptoms appear serious and may require immediate medical attention.');
-  } else if(parsed.severity === 'high') {
-    base.push('These symptoms deserve prompt attention from a healthcare professional.');
-  } else if(parsed.severity === 'medium') {
-    base.push('This looks like a manageable concern, but please monitor it closely.');
-  } else {
-    base.push('Things seem mild right now, but keep an eye on how you feel.');
-  }
-  if(/fever|cough|sore throat/.test(text.toLowerCase())) {
-    base.push('Rest, fluids, and gentle self-care can help you recover.');
-  }
-  if(/headache|migraine/.test(text.toLowerCase())) {
-    base.push('Try resting in a quiet room and consider mild pain relief if needed.');
-  }
-  if(/allergy|itchy|sneezing/.test(text.toLowerCase())) {
-    base.push('Avoid triggers and consider an antihistamine.');
-  }
-  base.push('I am not a substitute for professional medical advice.');
-  return `${base.join(' ')} \n\nPlease describe any additional symptoms for better guidance.`;
-}
-
-// ──────────────────────────────────────────────
-async function sendMessage(text) {
-  const input = document.getElementById('chatInput');
-  const userText = text || input.value.trim();
-  if(!userText || isTyping) return;
-  input.value = '';
-  document.getElementById('suggestionChips').style.display='none';
-  appendMessage('user', userText);
-  chatHistory.push({role:'user', content: userText});
-  setTyping(true);
-
-  await new Promise(r => setTimeout(r, 500));
-
-  const parsed = analyzeSymptoms(userText);
-  const displayText = buildDoctorReply(userText, parsed);
-  const isEmergency = parsed.severity === 'emergency' || parsed.safetyLevel >= 75;
-  appendMessage('dr', displayText, isEmergency);
-  chatHistory.push({role:'assistant', content: `${displayText}\n<<<JSON${JSON.stringify(parsed)}>>>`});
-  updateSidePanel(parsed);
-  setTyping(false);
-}
-
-// ──────────────────────────────────────────────
-// CONVERSATION HISTORY sessions
-// ──────────────────────────────────────────────
-const pastSessions = [
-  null, // current = live
-  [{role:'dr',text:"Hello! How can I help you today?"},{role:'user',text:"Just a general check-in, feeling fine"},{role:'dr',text:"Great to hear! Keep up healthy habits — stay hydrated, sleep 7-8 hours, and exercise regularly. Come back anytime."}],
-  [{role:'dr',text:"Hello! What symptoms are you experiencing?"},{role:'user',text:"I've had a persistent headache since morning"},{role:'dr',text:"Headaches can have many causes. Try resting in a quiet, dark room and stay hydrated. If it's severe or accompanied by fever/stiff neck, please seek care immediately."}],
-  [{role:'dr',text:"Hello! How can I assist?"},{role:'user',text:"Follow-up on my allergy symptoms"},{role:'dr',text:"Allergy symptoms like sneezing and itchy eyes can be managed with antihistamines like Cetirizine. Avoid known triggers and keep windows closed during high pollen season."}]
-];
-
-function loadSession(idx, el) {
-  document.querySelectorAll('.history-item').forEach(i=>i.classList.remove('active'));
-  el.classList.add('active');
-  if(idx===0) {
-    showToast('Current session active'); return;
-  }
-  const session = pastSessions[idx];
-  const messages = document.getElementById('chatMessages');
-  messages.innerHTML='';
-  session.forEach(m=>{
-    const div = document.createElement('div');
-    div.className = `msg ${m.role==='user'?'user':'dr'}`;
-    if(m.role==='user') {
-      div.innerHTML=`<div class="msg-avatar user-av">👤</div><div><div class="msg-bubble">${m.text}</div></div>`;
-    } else {
-      div.innerHTML=`<div class="msg-avatar">👩‍⚕️</div><div><div class="msg-bubble">${m.text}</div></div>`;
-    }
-    messages.appendChild(div);
-  });
-  messages.scrollTop = messages.scrollHeight;
-  document.getElementById('suggestionChips').style.display='none';
-  showToast('Loaded previous session (read-only)');
-}
-
-
+});
+document.getElementById('sendBtn')?.addEventListener('click', () => sendMessage());
 buildCalendar();
 </script>
+<script type="module" src="../js/role-dashboard-nav.js"></script>
+<script type="module" src="../js/auth-navigation.js?v=2"></script>
 </body>
 </html>
