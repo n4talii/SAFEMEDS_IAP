@@ -14,7 +14,7 @@ repo link : https://github.com/n4talii/SAFEMEDS_IAP.git
 1\.        Docs/DevOps Lead – Natalie Chebet Meresey (194587)  
 2\.        Integration/QA Lead – Chacha Mogaya Nathan \[197929\]  
 3\.        API Lead – Koori Thomas Njue  \[218891\]  
-4\.        BackendDevOp – Trevor Ndung’u Githinji
+4\.        BackendDevOp – Trevor Ndung’u Githinji [\221189]
 
 ### **Communication Norms**
 
