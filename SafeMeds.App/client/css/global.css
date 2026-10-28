@@ -69,6 +69,60 @@ body {
   opacity: 0.8;
 }
 
+.navbar-links .owner-dashboard-link[hidden] {
+  display: none !important;
+}
+
+body.auth-navigation-pending .public-auth-links,
+body.auth-navigation-pending .signed-in-nav,
+body.auth-navigation-pending .consumer-auth-links,
+body.auth-navigation-pending .consumer-account {
+  visibility: hidden !important;
+}
+
+.public-auth-links,
+.signed-in-nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.public-auth-links[hidden],
+.signed-in-nav[hidden] {
+  display: none;
+}
+
+.signed-in-nav {
+  color: #fff;
+  font-weight: 600;
+}
+
+.signed-in-nav-avatar {
+  width: 34px;
+  height: 34px;
+  border: 2px solid rgba(255, 255, 255, .85);
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.signed-in-nav-avatar[hidden] {
+  display: none;
+}
+
+.signed-in-nav button {
+  padding: 9px 14px;
+  border: 1px solid rgba(255, 255, 255, .7);
+  border-radius: 20px;
+  color: #fff;
+  background: transparent;
+  font: inherit;
+  cursor: pointer;
+}
+
+.signed-in-nav button:hover {
+  background: rgba(255, 255, 255, .14);
+}
+
 /* ==========================================================================
    3. CORE COLOR PALETTE (CSS VARIABLES)
    ========================================================================== 

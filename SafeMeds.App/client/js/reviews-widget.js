@@ -7,75 +7,65 @@ async function loadDashboardReviews() {
   container.innerHTML = '<p class="empty-state">Loading reviews...</p>';
 
   try {
-    const res = await fetch(DASHBOARD_REVIEWS_URL);
+    const response = await fetch(DASHBOARD_REVIEWS_URL);
+    const reviews = await response.json();
+    if (!response.ok || !Array.isArray(reviews)) {
+      throw new Error("Review service returned an invalid response");
+    }
 
-    if (!res.ok) {
-      container.innerHTML =
-        '<p class="empty-state">Unable to load reviews.</p>';
+    container.replaceChildren();
+    if (!reviews.length) {
+      const empty = document.createElement("p");
+      empty.className = "empty-state";
+      empty.textContent = "No customer reviews yet.";
+      container.appendChild(empty);
       return;
     }
 
-    const reviews = await res.json();
-
-    if (!Array.isArray(reviews)) {
-      container.innerHTML = '<p class="empty-state">Invalid data received.<p>';
-      return;
-    }
-
-    container.innerHTML = ""; // Clear loading state.
-
-    if (reviews.length === 0) {
-      container.innerHTML =
-        '<p class="empty-state">No customer reviews yet.</p>';
-      return;
-    }
-
-    reviews.slice(0, 5).forEach((rev, index) => {
-      // Generate star icons based on numeric rating (1 - 5)
-      const productName = rev.inventory ? rev.inventory.item_name : "Medicine";
-
-      let starsHTML = "";
-      for (let i = 1; i <= 5; i++) {
-        if (i <= rev.rating) {
-          starsHTML += '<i class="fa-solid fa-star star-filled"></i>';
-        } else {
-          starsHTML += '<i class="fa-regular fa-star"></i>';
-        }
+    reviews.slice(0, 5).forEach((review, index) => {
+      const card = document.createElement("div");
+      card.className = "review-item";
+      const avatar = document.createElement("div");
+      avatar.className = "review-avatar-wrapper";
+      avatar.innerHTML = '<i class="fa-solid fa-user-circle default-avatar" aria-hidden="true"></i>';
+      const content = document.createElement("div");
+      content.className = "review-content-block";
+      const header = document.createElement("div");
+      header.className = "review-header-row";
+      const customer = document.createElement("span");
+      customer.className = "reviewer-name";
+      customer.textContent = review.customer_name || "Customer";
+      const product = document.createElement("span");
+      product.className = "rewiew-meta";
+      product.textContent = review.inventory?.item_name || "Medicine";
+      header.append(customer, product);
+      const stars = document.createElement("div");
+      stars.className = "review-stars-row";
+      const rating = Math.max(0, Math.min(5, Number(review.rating) || 0));
+      for (let star = 1; star <= 5; star += 1) {
+        const icon = document.createElement("i");
+        icon.className = star <= rating ? "fa-solid fa-star star-filled" : "fa-regular fa-star";
+        icon.setAttribute("aria-hidden", "true");
+        stars.appendChild(icon);
       }
-
-      const reviewCard = document.createElement("div");
-      reviewCard.className = "review-card";
-      reviewCard.innerHTML = `
-              <div class="review-avatar-wrapper">
-                <i class="fa-solid fa-user-circle default-avatar"></i>
-              </div>
-
-              <div class="review-content-block">
-                <div class="review-header-row">
-                  <span class="reviewer-name">${rev.customer_name}</span>
-                  <span class="rewiew-meta">${productName}</span>
-                </div>
-
-                <div class="review-stars-row">
-                  ${starsHTML}
-                </div>
-
-                <p class="review-body-text">
-                  ${rev.review_text || ""}
-                </p>
-              </div>                          
-            `;
-      container.appendChild(reviewCard);
-
-      // Add horizontal divider line between review items
+      const text = document.createElement("p");
+      text.className = "review-body-text";
+      text.textContent = review.review_text || "No written comment.";
+      content.append(header, stars, text);
+      card.append(avatar, content);
+      container.appendChild(card);
       if (index < Math.min(reviews.length, 5) - 1) {
         const divider = document.createElement("hr");
         divider.className = "review-divider";
         container.appendChild(divider);
       }
     });
-  } catch (err) {
-    console.error("Failed to render reviews widget:", err);
+  } catch (error) {
+    console.error("Failed to render dashboard reviews:", error);
+    const message = document.createElement("p");
+    message.className = "empty-state";
+    message.textContent = "Reviews could not load. Check that the server is running.";
+    container.replaceChildren(message);
   }
 }
 

@@ -67,8 +67,8 @@ The core feature is the **Inventory Management** console, which tracks medicatio
 | APIs | Method  | Purpose  |
 | :---- | :---- | :---- |
 | /api/medicines?search={query}  | GET | Search medicines by name  |
-| /api/pharmacies?lat={lat}\&lng={lng}\&radius={radius}  | GET | Get nearby pharmacies within radius  |
-| /api/pharmacies?search={query}  | GET  | Search pharmacies by name  |
+| /api/meditrac/medications/search?name={name}\&lat={lat}\&lng={lng}\&in_stock={boolean}\&radius_km={km}\&limit={count} | GET | Proxy medication search to MediTrac using server-side MEDITRAC_BASE_URL and MEDITRAC_API_KEY |
+| /api/pharmacies?lat={lat}\&lng={lng}\&radius={km}\&search={name}  | GET | Get verified pharmacies from `safe_meds_pharmacies` within the consumer-selected radius, nearest first  |
 | /api/pharmacies/{id}  | GET | Get single pharmacy details  |
 | /api/pharmacies/{id}/availability?medicine={medicineId}  | GET | Check medicine availability at a pharmacy  |
 | /api/pharmacies/{id}/safety-score  | GET | Get/update safety score  |

@@ -8,6 +8,7 @@ async function loadInventory() {
     if (!res.ok) {
       const errorText = await res.text();
       console.error(`Server error (${res.status}):`, errorText);
+      window.showDashboardToast?.("Inventory could not load. Check that the server is running.");
       return;
     }
     const data = await res.json();
@@ -46,13 +47,15 @@ async function loadInventory() {
             </div>
             <div class="col-action">
               <a href="#" class="edit-btn" data-id="${item.id}">Edit</a> / 
-              <a href="#" class="order-btn" data-id="${item.id}">Order</a>    
+              <button type="button" class="order-btn" data-id="${item.id}">Order</button>
             </div>            
             `;
       container.appendChild(row);
     });
+    document.dispatchEvent(new CustomEvent("inventory:loaded"));
   } catch (err) {
     console.error("Error loading inventory:", err);
+    window.showDashboardToast?.("Inventory could not load. Check that the server is running.");
   }
 }
 
@@ -179,12 +182,15 @@ document.addEventListener("DOMContentLoaded", () => {
           addMedForm.reset();
           if (idEl) idEl.value = "";
           if (modal && modal.close) modal.close();
-          loadInventory(); // This Instantly refreshes the UI with new Supabase data
+          loadInventory(); // Refresh the table after save
+          window.showDashboardToast?.(isEdit ? "Medicine updated." : "Medicine added.");
         } else {
           console.error("Backend error details:", result);
+          window.showDashboardToast?.("Could not save this medicine. Check that the server is running and try again.");
         }
       } catch (err) {
-        console.error("Failed to add medicine:", err);
+        console.error("Failed to save medicine:", err);
+        window.showDashboardToast?.("Could not reach the inventory server.");
       }
     });
   }
