@@ -22,11 +22,8 @@
   },
   "homepage": "https://github.com/Mogaya-18/SafeMeds.App#readme",
   "dependencies": {
-<<<<<<< HEAD
     "@supabase/server": "^1.9.2",
-=======
     "@google/genai": "^2.31.0",
->>>>>>> 54786f079312b220cad9f21ab04a2a188d13bf77
     "@supabase/supabase-js": "^2.118.0",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
