@@ -1,7 +1,7 @@
 # m **CONSUMER END.**
 
 \- The first call worked and it returned data in the right format.
-\- We had no issues with the API from Team 3.
+\- We had no issues with the API from Team 2.
 \- They are good producers.
 
 # **The producer End**
