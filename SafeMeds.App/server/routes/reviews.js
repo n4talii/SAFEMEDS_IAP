@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const supabase = require("../db");
+const { dataSupabase: supabase } = require("../db");
 
 // 1. GET /api/reviews - Get all reviews with product details (For Dashboard Widget & MajiApp).
 router.get("/", async (req, res) => {

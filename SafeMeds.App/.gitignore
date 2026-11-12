@@ -3,3 +3,10 @@ node_modules/
 firebase-debug.log
 .env
 .env.local
+login.json
+register.json
+pharmacy_register.json
+stock.json
+wellness_login.json
+instructions.md
+
