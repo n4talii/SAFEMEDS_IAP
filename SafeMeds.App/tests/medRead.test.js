@@ -1,39 +1,53 @@
 const request = require("supertest");
+
+jest.mock("../server/db", () => {
+  const mockClient = { from: jest.fn() };
+  return {
+    dataSupabase: mockClient,
+    authSupabase: mockClient,
+    supabase: mockClient,
+  };
+});
+
+const { dataSupabase: supabase } = require("../server/db");
 const app = require("../server/index34");
 
 describe("Product Endpoints (/api/inventory)", () => {
-  // GET the product by the ID.
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
 
   describe("GET /api/inventory/:id", () => {
-    //  1. The Happy path (200 Okay)
     it("should return 200 and product details for a valid numeric ID", async () => {
-      // Arrange
       const productId = 7;
+      supabase.from.mockReturnValue({
+        select: jest.fn().mockReturnThis(),
+        eq: jest.fn().mockReturnThis(),
+        single: jest.fn().mockResolvedValue({
+          data: { id: 7, item_name: "Amoxicillin 500mg", current_stock: 120 },
+          error: null,
+        }),
+      });
 
-      //Act
       const res = await request(app).get(`/api/inventory/${productId}`);
 
-      //Assert
       expect(res.status).toBe(200);
       expect(res.body).toHaveProperty("id", productId);
-      expect(res.body).toHaveProperty("name");
+      expect(res.body).toHaveProperty("name", "Amoxicillin 500mg");
       expect(typeof res.body.name).toBe("string");
-      expect(res.body).toHaveProperty("stock");
+      expect(res.body).toHaveProperty("stock", 120);
       expect(typeof res.body.stock).toBe("number");
     });
 
-    // 2. Validation Rejection / Bad Request (400)
     it("should return 400 when a invalid non-numeric ID parameter is provided", async () => {
-      //Arrange
       const invalidId = "abc-invalid";
 
-      //Act
       const res = await request(app).get(`/api/inventory/${invalidId}`);
 
-      //Assert
       expect(res.status).toBe(400);
       expect(res.body).toHaveProperty("error");
       expect(typeof res.body.error).toBe("string");
+      expect(supabase.from).not.toHaveBeenCalled();
     });
   });
 });
