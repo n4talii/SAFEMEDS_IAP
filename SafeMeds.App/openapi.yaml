@@ -1,20 +1,45 @@
 openapi: 3.0.0
 info:
-  title: MajiApp & SafeMeds Integration API
+  title: SafeMeds & MajiApp Integration API
   version: 1.0.0
-  description: OpenAPI contract for water purification inventory, health alerts, and vendor locations.
+  description: API contract for water purification inventory, product reviews, customer orders, and health alert signals. Protected via API keys and rate limiting.
+
+# All endpoints need to have api key authentication.
+security:
+  - ApiKeyAuth: []
 
 paths:
+  /tasks:
+    get:
+      summary: Protected connectivity check
+      description: Verifies server reachability and API key authorization without touching database records.
+      responses:
+        '200':
+          description: Connectivity check successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Success! You accessed a protected endpoint."
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '429':
+          $ref: '#/components/responses/RateLimitError'
+
   /inventory:
     get:
       summary: Retrieve available water-purification inventory products
+      description: Returns items in the Water Purification category with availability status.
       parameters:
         - name: product
           in: query
           required: false
           schema:
             type: string
-            example: "chlorine-tablets"
+            example: "Aquatabs"
         - name: available
           in: query
           required: false
@@ -34,44 +59,32 @@ paths:
                     - productId
                     - productName
                     - availableQuantity
+                    - isAvailable
                   properties:
                     productId:
                       type: integer
-                      example: 100102
+                      example: 1
                     productName:
                       type: string
-                      example: "Chlorine Tablets 100mg"
+                      example: "Aquatabs"
                     availableQuantity:
                       type: integer
                       example: 450
                     isAvailable:
                       type: boolean
                       example: true
-        '400':
-          description: Invalid query parameters provided
-          content:
-            application/json:
-              schema: 
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: "Invalid parameter type"              
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '429':
+          $ref: '#/components/responses/RateLimitError'
 
-  /products/water-purification:
+  /reviews:
     get:
-      summary: Retrieve water-purification products sorted by rating
-      parameters:
-        - name: sort
-          in: query
-          required: false
-          schema:
-            type: string
-            enum: [rating, name]
-            example: "rating"
+      summary: Retrieve top-ranked water purification products by rating
+      description: Returns top 3 water-purification products ranked by customer review score.
       responses:
         '200':
-          description: Sorted list of water purification products with ratings
+          description: List of top rated products
           content:
             application/json:
               schema:
@@ -86,79 +99,81 @@ paths:
                   properties:
                     productId:
                       type: integer
-                      example: 100102
+                      example: 1
                     productName:
                       type: string
-                      example: "AquaClean Purification Drops"
+                      example: "Aquatabs"
                     averageRating:
                       type: number
                       format: float
                       example: 4.8
                     reviewCount:
                       type: integer
-                      example: 124
-        '400':
-          description: Invalid sort parameter
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: "Sort parameter must be either 'rating' or 'name' "              
+                      example: 25
+                    topComment:
+                      type: string
+                      example: "Very effective and convenient for clean drinking water."
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '429':
+          $ref: '#/components/responses/RateLimitError'
 
-  /medications/{id}/stock:
-    patch:
-      summary: Modify stock quantity field for a specific medication (e.g. Water-Purification Meds)
-      parameters:
-        - name: id
-          in: path
-          required: true
-          description: Unique ID of the medication to update
-          schema:
-            type: integer
-            example: 100102
+  /orders:
+    post:
+      summary: Create a new customer order
+      description: Submits a new water purification product order.
       requestBody:
         required: true
         content:
           application/json:
-            schema: 
+            schema:
               type: object
               required:
-                - stockQuantity
+                - productId
+                - quantity
+                - customerName
               properties:
-                stockQuantity:
+                productId:
                   type: integer
-                  minimum: 0
-                  example: 350        
+                  example: 17
+                quantity:
+                  type: integer
+                  example: 5
+                customerName:
+                  type: string
+                  example: "Nairobi Relief Clinic"
       responses:
-        '200':
-          description: Stock updated successfully
+        '201':
+          description: Order placed successfully
           content:
             application/json:
               schema:
                 type: object
-                required: 
-                  - productId
-                  - productName
-                  - stockQuantity
-                  - productCategory
                 properties:
+                  message:
+                    type: string
+                    example: "Order placed successfully"
+                  orderId:
+                    type: integer
+                    example: 101
                   productId:
                     type: integer
-                    example: 100102
-                  productName:
-                    type: string
-                    example: "Chlorine-tablets"
-                  stockQuantity:
+                    example: 17
+                  quantity:
                     type: integer
-                    example: 350
-                  productCategory: 
+                    example: 5
+                  customerName:
                     type: string
-                    example: "water-purification"
+                    example: "Nairobi Relief Clinic"
+                  status:
+                    type: string
+                    example: "Pending"
+                  createdAt:
+                    type: string
+                    format: date-time
+                    example: "2026-10-30T08:00:00Z"
         '400':
-          description: Invalid payload or missing required fields
+          description: Bad payload request (invalid parameters)
           content:
             application/json:
               schema:
@@ -166,201 +181,88 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: "stockQuantity must be an integer greater than or equal to 0"
-        '404':
-          description: Medication ID not found
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: "Medication with ID 100102 not found"
+                    example: "Invalid payload. 'quantity' must be a positive integer greater than 0."
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '429':
+          $ref: '#/components/responses/RateLimitError'
 
-  /health-signals/area-alerts:
+  /v1/health-signals/area-alerts:
     get:
-      summary: Retrieve active waterborne-illness alerts for a region
+      summary: Retrieve active waterborne illness spike alerts for a region
       parameters:
         - name: region
           in: query
           required: true
           schema:
             type: string
-            example: "eastern-district"
+            example: "Nairobi-Central"
         - name: since
           in: query
           required: true
           schema:
             type: string
             format: date
-            example: "2026-08-01"
+            example: "2026-10-29"
       responses:
         '200':
-          description: List of active health signals and alerts
+          description: Anonymized aggregate health signal alerts
           content:
             application/json:
               schema:
                 type: array
                 items:
                   type: object
-                  required:
-                    - alertId
-                    - region
-                    - illnessType
-                    - severity
-                    - detectedAt
                   properties:
-                    alertId:
-                      type: string
-                      example: "alt-8812"
                     region:
                       type: string
-                      example: "eastern-district"
-                    illnessType:
+                      example: "Nairobi-Central"
+                    illnessCategory:
                       type: string
                       example: "Cholera"
-                    severity:
+                    signalMode:
                       type: string
-                      enum: [low, moderate, high, critical]
-                      example: "high"
-                    detectedAt:
-                      type: string
-                      format: date-time
-                      example: "2026-08-13T10:00:00Z"
-        '400':
-          description: Missing or invalid query parameters
+                      example: "demo"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '429':
+          $ref: '#/components/responses/RateLimitError'
 
-  /health-experts:
-    get:
-      summary: Retrieve nearby health professionals specializing in water purification
-      parameters:
-        - name: type
-          in: query
-          required: false
-          schema:
-            type: string
-            example: "water_purification"
-        - name: status
-          in: query
-          required: false
-          schema:
-            type: string
-            example: "verified"
-        - name: lat
-          in: query
-          required: true
-          schema:
-            type: number
-            format: double
-            example: -1.286389
-        - name: lng
-          in: query
-          required: true
-          schema:
-            type: number
-            format: double
-            example: 36.817223
-        - name: radius
-          in: query
-          required: true
-          schema:
-            type: number
-            example: 10
-      responses:
-        '200':
-          description: A list of nearby health experts
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: object
-                  required:
-                    - expertId
-                    - name
-                    - phone
-                    - status
-                  properties:
-                    expertId:
-                      type: string
-                      example: "exp-302"
-                    name:
-                      type: string
-                      example: "Dr. Jane Wanjiku"
-                    specialty:
-                      type: string
-                      example: "Water Sanitation Specialist"
-                    status:
-                      type: string
-                      example: "verified"
-                    phone:
-                      type: string
-                      example: "+254712345678"
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+      description: API key required for authorization. Pass in the `X-API-Key` header.
 
-  /vendors:
-    get:
-      summary: Retrieve verified pharmacies within a geographic radius
-      parameters:
-        - name: type
-          in: query
-          required: false
+  responses:
+    UnauthorizedError:
+      description: Missing or invalid API key
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Missing or invalid API key"
+
+    RateLimitError:
+      description: Rate limit exceeded (more than 100 requests per 60 seconds)
+      headers:
+        Retry-After:
           schema:
             type: string
-            example: "pharmacy"
-        - name: status
-          in: query
-          required: false
+          description: Time in seconds to wait before making another request
+      content:
+        application/json:
           schema:
-            type: string
-            example: "verified"
-        - name: lat
-          in: query
-          required: true
-          schema:
-            type: number
-            format: double
-            example: -1.286389
-        - name: lng
-          in: query
-          required: true
-          schema:
-            type: number
-            format: double
-            example: 36.817223
-        - name: radius
-          in: query
-          required: true
-          schema:
-            type: number
-            example: 5
-      responses:
-        '200':
-          description: List of verified pharmacy vendors
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: object
-                  required:
-                    - vendorId
-                    - name
-                    - status
-                    - address
-                  properties:
-                    vendorId:
-                      type: string
-                      example: "vnd-109"
-                    name:
-                      type: string
-                      example: "SafeCare Pharmacy"
-                    type:
-                      type: string
-                      example: "pharmacy"
-                    status:
-                      type: string
-                      example: "verified"
-                    address:
-                      type: string
-                      example: "123 Commercial St, Nairobi"
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Too many requests"
+              retryAfter:
+                type: integer
+                example: 45

@@ -1,6 +1,7 @@
 const express = require("express");
 const request = require("supertest");
 
+<<<<<<< HEAD
 jest.mock("../server/db", () => ({
   dataSupabase: {
     from: jest.fn(),
@@ -8,6 +9,18 @@ jest.mock("../server/db", () => ({
 }));
 
 const { dataSupabase: supabase } = require("../server/db");
+=======
+jest.mock("../server/db", () => {
+  const mockClient = { from: jest.fn() };
+  return {
+    authSupabase: mockClient,
+    dataSupabase: mockClient,
+    supabase: mockClient,
+  };
+});
+
+const { authSupabase: supabase } = require("../server/db");
+>>>>>>> refs/remotes/origin/main
 const pharmaciesRoute = require("../server/routes/pharmacies");
 
 const app = express();
@@ -75,7 +88,9 @@ describe("GET /api/pharmacies", () => {
       error: null,
     });
 
-    const response = await request(app).get("/api/pharmacies?lat=0&lng=0&radius=10");
+    const response = await request(app).get(
+      "/api/pharmacies?lat=0&lng=0&radius=10",
+    );
 
     expect(response.status).toBe(200);
     expect(response.body.map((pharmacy) => pharmacy.name)).toEqual([
@@ -138,7 +153,9 @@ describe("GET /api/pharmacies", () => {
     );
 
     expect(response.status).toBe(200);
-    expect(response.body.map((pharmacy) => pharmacy.name)).toEqual(["Family Pharmacy"]);
+    expect(response.body.map((pharmacy) => pharmacy.name)).toEqual([
+      "Family Pharmacy",
+    ]);
     expect(response.body[0].branch).toBe("Family branch");
     expect(response.body[0].pharmacy_id).toBe("family-id");
     expect(response.body[0].address).toBe("Family address");
@@ -148,7 +165,9 @@ describe("GET /api/pharmacies", () => {
   });
 
   it("rejects requests without valid coordinates and radius", async () => {
-    const response = await request(app).get("/api/pharmacies?lat=invalid&lng=0&radius=10");
+    const response = await request(app).get(
+      "/api/pharmacies?lat=invalid&lng=0&radius=10",
+    );
 
     expect(response.status).toBe(400);
     expect(response.body.error).toMatch(/lat, lng, and radius/i);
