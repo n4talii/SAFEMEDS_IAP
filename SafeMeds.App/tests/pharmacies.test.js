@@ -2,10 +2,12 @@ const express = require("express");
 const request = require("supertest");
 
 jest.mock("../server/db", () => ({
-  from: jest.fn(),
+  dataSupabase: {
+    from: jest.fn(),
+  },
 }));
 
-const supabase = require("../server/db");
+const { dataSupabase: supabase } = require("../server/db");
 const pharmaciesRoute = require("../server/routes/pharmacies");
 
 const app = express();

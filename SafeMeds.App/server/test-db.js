@@ -1,4 +1,4 @@
-const supabase = require("./db");
+const { dataSupabase: supabase } = require("./db");
 
 async function checkConnection() {
   console.log("Checking Supabase connection...");

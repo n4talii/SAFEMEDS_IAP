@@ -1,0 +1,25 @@
+{
+  "medications": [
+    {
+      "sku": "BOB-874",
+      "name": "NAFUU",
+      "form": "Tablets - 3x10 pack",
+      "category": "Analgesic / Pain Relief",
+      "quantity": 35,
+      "unit": "Boxes",
+      "price": 80,
+      "branch": "CBD Branch"
+    },
+    {
+      "sku": "UDA-908",
+      "name": "Rack",
+      "form": "Capsules - 5x10 pack",
+      "category": "Antibiotic",
+      "quantity": 45,
+      "unit": "Boxes",
+      "price": 90,
+      "branch": "CBD Branch"
+    }
+   
+  ]
+}

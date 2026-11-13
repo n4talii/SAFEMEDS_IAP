@@ -1,5 +1,5 @@
 const express = require("express");
-const supabase = require("../db");
+const { dataSupabase: supabase } = require("../db");
 
 const router = express.Router();
 const PAGE_SIZE = 500;

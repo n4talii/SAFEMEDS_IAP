@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const supabase = require("../db");
+const { dataSupabase: supabase } = require("../db");
 
 //GET /api/inventory - Retrieve all items from Superbase (optional ?search=)
 router.get("/", async (req, res) => {

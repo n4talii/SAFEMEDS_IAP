@@ -219,43 +219,53 @@
         </div>
       </form>
     </dialog>
-    <dialog id="review-modal" class="review-modal">
+
+    <!-- REVIEWS MODAL: 5-STAR RATING & FEEDBACK -->
+    <dialog id="review-modal" class="review-modal" aria-labelledby="review-modal-title">
       <div class="modal-content">
-        <h3>Leave a Medication Review</h3>
-        <p>Help our customers and suppliers find the safest products.</p>
+        <div class="review-modal-header">
+          <h3 id="review-modal-title">Leave a Medication Review</h3>
+          <p>Share your experience to help customers and community partners find safe products.</p>
+        </div>
 
         <form id="landing-review-form">
           <div class="form-group">
             <label for="reviewer-name">Your Name:</label>
-            <input type="text" id="reviewer-name" placeholder="e.g., Jane Doe" required />
+            <input type="text" id="reviewer-name" placeholder="e.g., Jane Doe" maxlength="100" required />
           </div>
 
           <div class="form-group">
-            <label for="review-product-select">Select Medication:</label>
+            <label for="review-product-select">Select Medication / Product:</label>
             <select id="review-product-select" required>
               <option value="">Loading medications...</option>
             </select>
           </div>
 
           <div class="form-group">
-            <label for="reviewer-rating">Rating (1 to 5 Stars):</label>
-            <select id="reviewer-rating" required>
-              <option value="5">★★★★★ (5 - Excellent)</option>
-              <option value="4">★★★★☆ (4 - Good)</option>
-              <option value="3">★★★☆☆ (3 - Average)</option>
-              <option value="2">★★☆☆☆ (2 - Poor)</option>
-              <option value="1">★☆☆☆☆ (1 - Terrible)</option>
-            </select>
+            <label id="rating-label">Rating (1 to 5 Stars):</label>
+            <div class="star-rating-control" role="group" aria-labelledby="rating-label">
+              <input type="hidden" id="reviewer-rating" name="rating" value="5" />
+              <div class="star-rating-group" id="star-picker">
+                <button type="button" class="star-icon-btn is-active" data-value="1" aria-label="1 Star">★</button>
+                <button type="button" class="star-icon-btn is-active" data-value="2" aria-label="2 Stars">★</button>
+                <button type="button" class="star-icon-btn is-active" data-value="3" aria-label="3 Stars">★</button>
+                <button type="button" class="star-icon-btn is-active" data-value="4" aria-label="4 Stars">★</button>
+                <button type="button" class="star-icon-btn is-active" data-value="5" aria-label="5 Stars">★</button>
+              </div>
+              <span class="star-rating-feedback" id="star-rating-feedback">5 - Excellent</span>
+            </div>
           </div>
 
           <div class="form-group">
             <label for="reviewer-comments">Comments / Feedback:</label>
-            <textarea id="reviewer-comments" rows="3" placeholder="Share your experience with this medication..."></textarea>
+            <textarea id="reviewer-comments" rows="3" maxlength="1000" placeholder="Share your experience (e.g. effectiveness, packaging, side effects)..."></textarea>
           </div>
+
+          <div id="review-status-msg" class="review-status-msg" role="alert" aria-live="polite"></div>
 
           <div class="modal-actions">
             <button type="button" id="close-review-modal-btn">Cancel</button>
-            <button type="submit" class="btn-primary">Submit Review</button>
+            <button type="submit" id="submit-review-btn">Submit Review</button>
           </div>
         </form>
       </div>
@@ -268,21 +278,83 @@
         const modal = document.getElementById("review-modal");
         const productSelect = document.getElementById("review-product-select");
         const reviewForm = document.getElementById("landing-review-form");
+        const ratingInput = document.getElementById("reviewer-rating");
+        const starFeedback = document.getElementById("star-rating-feedback");
+        const statusMsg = document.getElementById("review-status-msg");
+        const submitBtn = document.getElementById("submit-review-btn");
+        const reviewerNameInput = document.getElementById("reviewer-name");
+        const starButtons = document.querySelectorAll("#star-picker .star-icon-btn");
 
         const API_URL = "http://localhost:8080/api";
 
+        const RATING_LABELS = {
+          1: "1 - Terrible",
+          2: "2 - Poor",
+          3: "3 - Average",
+          4: "4 - Good",
+          5: "5 - Excellent",
+        };
+
+        function setStarRating(rating) {
+          const num = Number(rating) || 5;
+          ratingInput.value = num;
+          if (starFeedback) {
+            starFeedback.textContent = RATING_LABELS[num] || `${num} Stars`;
+          }
+
+          starButtons.forEach((btn) => {
+            const val = Number(btn.dataset.value);
+            btn.classList.toggle("is-active", val <= num);
+            btn.classList.remove("is-hovered");
+          });
+        }
+
+        // Star click and hover interactions
+        starButtons.forEach((btn) => {
+          btn.addEventListener("click", () => {
+            setStarRating(btn.dataset.value);
+          });
+
+          btn.addEventListener("mouseenter", () => {
+            const hoverVal = Number(btn.dataset.value);
+            starButtons.forEach((b) => {
+              b.classList.toggle("is-hovered", Number(b.dataset.value) <= hoverVal);
+            });
+            if (starFeedback) {
+              starFeedback.textContent = RATING_LABELS[hoverVal] || `${hoverVal} Stars`;
+            }
+          });
+        });
+
+        document.getElementById("star-picker")?.addEventListener("mouseleave", () => {
+          setStarRating(ratingInput.value);
+        });
+
+        // Open modal & load products
         if (reviewBtn && modal) {
           reviewBtn.addEventListener("click", async (e) => {
             e.preventDefault();
+
+            // Auto-fill reviewer name if logged in
+            const currentAccountName = document.getElementById("consumer-account-name")?.textContent?.trim();
+            if (currentAccountName && reviewerNameInput && !reviewerNameInput.value) {
+              reviewerNameInput.value = currentAccountName;
+            }
+
+            if (statusMsg) {
+              statusMsg.className = "review-status-msg";
+              statusMsg.textContent = "";
+            }
 
             try {
               const res = await fetch(`${API_URL}/inventory`);
               const products = await res.json();
 
               if (res.ok && Array.isArray(products)) {
-                productSelect.innerHTML = '<option value="">Select a Medication...</option>';
+                productSelect.innerHTML = '<option value="">Select a Medication / Product...</option>';
                 products.forEach((prod) => {
-                  productSelect.innerHTML += `<option value="${prod.id}">${prod.item_name} (${prod.category})</option>`;
+                  const categorySuffix = prod.category ? ` (${prod.category})` : "";
+                  productSelect.innerHTML += `<option value="${prod.id}">${prod.item_name}${categorySuffix}</option>`;
                 });
               }
             } catch (err) {
@@ -297,21 +369,45 @@
           });
         }
 
+        // Close modal
         if (closeBtn && modal) {
           closeBtn.addEventListener("click", () => {
             modal.close ? modal.close() : (modal.style.display = "none");
           });
         }
 
+        // Form submission
         if (reviewForm) {
           reviewForm.addEventListener("submit", async (e) => {
             e.preventDefault();
 
+            const productId = productSelect.value;
+            const customerName = reviewerNameInput.value.trim();
+            const rating = Number(ratingInput.value);
+            const reviewText = document.getElementById("reviewer-comments").value.trim();
+
+            if (!productId) {
+              if (statusMsg) {
+                statusMsg.className = "review-status-msg is-error";
+                statusMsg.textContent = "Please select a product to review.";
+              }
+              return;
+            }
+
+            if (submitBtn) {
+              submitBtn.disabled = true;
+              submitBtn.textContent = "Submitting...";
+            }
+            if (statusMsg) {
+              statusMsg.className = "review-status-msg";
+              statusMsg.textContent = "";
+            }
+
             const payload = {
-              product_id: document.getElementById("review-product-select").value,
-              customer_name: document.getElementById("reviewer-name").value,
-              rating: document.getElementById("reviewer-rating").value,
-              review_text: document.getElementById("reviewer-comments").value,
+              product_id: Number(productId),
+              customer_name: customerName,
+              rating: rating,
+              review_text: reviewText,
             };
 
             try {
@@ -321,17 +417,41 @@
                 body: JSON.stringify(payload),
               });
 
+              const result = await res.json();
+
               if (res.ok) {
-                alert("Thank you! Your review has been submitted successfully.");
+                if (statusMsg) {
+                  statusMsg.className = "review-status-msg is-success";
+                  statusMsg.textContent = "Thank you! Your 5-star review has been saved successfully.";
+                }
                 reviewForm.reset();
-                if (modal.close) modal.close();
+                setStarRating(5);
+
+                setTimeout(() => {
+                  if (modal.close) modal.close();
+                  else modal.style.display = "none";
+                  if (statusMsg) {
+                    statusMsg.className = "review-status-msg";
+                    statusMsg.textContent = "";
+                  }
+                }, 1800);
               } else {
-                console.error("Failed to save review:", await res.json());
-                alert("Sorry, your review could not be saved. Please try again.");
+                if (statusMsg) {
+                  statusMsg.className = "review-status-msg is-error";
+                  statusMsg.textContent = result.error || "Sorry, your review could not be saved. Please try again.";
+                }
               }
             } catch (err) {
               console.error("Review submit error:", err);
-              alert("Could not reach the server. Please try again.");
+              if (statusMsg) {
+                statusMsg.className = "review-status-msg is-error";
+                statusMsg.textContent = "Could not reach the server. Please check your connection.";
+              }
+            } finally {
+              if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.textContent = "Submit Review";
+              }
             }
           });
         }
